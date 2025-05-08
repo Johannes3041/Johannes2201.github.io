@@ -11,139 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     
     <style>
-        /* Footer styling */
-.footer {
-    margin-top: 20px;
-    padding: 15px 0;
-    text-align: center;
-    border-top: 1px solid #2a3c54;
-}
-
-.footer p {
-    font-size: 14px;
-    color: #aabbcc;
-}
-
-.footer a {
-    color: #4f8fff;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.footer a:hover {
-    color: #7fafff;
-    text-decoration: underline;
-}
-        /* Footer styling */
-/* LinkedIn link styling */
-.linkedin-link {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
-    transition: transform 0.2s;
-}
-
-.linkedin-link:hover {
-    transform: scale(1.1);
-}
-
-@media (max-width: 900px) {
-    .linkedin-link {
-        top: 10px;
-        right: 10px;
-    }
-}
-/* MathJax styling for dark theme */
-.MathJax {
-    color: #ffffff !important;
-}
-
-/* Make fractions bigger */
-.formula .MathJax {
-    font-size: 120% !important; /* Increase overall formula size */
-}
-
-/* Target fractions specifically to make them even larger */
-.formula .MJX-TEX .mjx-frac {
-    font-size: 130% !important;
-    vertical-align: -0.5em;
-}
-
-/* Adjust the numerator and denominator spacing */
-.formula .MJX-TEX .mjx-num {
-    padding-bottom: 0.2em;
-}
-
-.formula .MJX-TEX .mjx-den {
-    padding-top: 0.2em;
-    border-top-width: 2px; /* Make fraction line thicker */
-}
-        /* Formula section styling */
-.formula-section {
-    margin-top: 20px;
-}
-
-.formulas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 15px;
-}
-
-.formula {
-    background-color: #1e293e;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.formula h4 {
-    border-bottom: 1px solid #2a3c54;
-    padding-bottom: 8px;
-    margin-bottom: 10px;
-    color: #ffffff;
-    font-size: 16px;
-}
-
-.formula p {
-    margin: 8px 0;
-    color: #aabbcc;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.formula-notes {
-    grid-column: 1 / -1;
-    background-color: #1e293e;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.formula-notes ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
-    list-style-type: none;
-    padding-left: 0;
-    margin-top: 10px;
-}
-
-.formula-notes li {
-    color: #aabbcc;
-    font-size: 14px;
-    padding-left: 15px;
-    position: relative;
-}
-
-.formula-notes li:before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: #4f8fff;
-}
         /* Overall layout */
         * {
             box-sizing: border-box;
@@ -345,6 +212,132 @@
             color: #aabbcc;
         }
 
+        /* Formula section styling */
+        .formula-section {
+            margin-top: 20px;
+        }
+
+        .formulas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .formula {
+            background-color: #1e293e;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .formula h4 {
+            border-bottom: 1px solid #2a3c54;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .formula p {
+            margin: 8px 0;
+            color: #aabbcc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .formula-notes {
+            grid-column: 1 / -1;
+            background-color: #1e293e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .formula-notes ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .formula-notes li {
+            color: #aabbcc;
+            font-size: 14px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .formula-notes li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4f8fff;
+        }
+
+        /* MathJax styling for dark theme */
+        .MathJax {
+            color: #ffffff !important;
+        }
+
+        .formula .MathJax {
+            font-size: 120% !important;
+        }
+
+        .formula .MJX-TEX .mjx-frac {
+            font-size: 130% !important;
+            vertical-align: -0.5em;
+        }
+
+        .formula .MJX-TEX .mjx-num {
+            padding-bottom: 0.2em;
+        }
+
+        .formula .MJX-TEX .mjx-den {
+            padding-top: 0.2em;
+            border-top-width: 2px;
+        }
+
+        /* LinkedIn link styling */
+        .linkedin-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        .linkedin-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* Footer styling */
+        .footer {
+            margin-top: 20px;
+            padding: 15px 0;
+            text-align: center;
+            border-top: 1px solid #2a3c54;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #aabbcc;
+        }
+
+        .footer a {
+            color: #4f8fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #7fafff;
+            text-decoration: underline;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 900px) {
             .main-content {
@@ -353,6 +346,11 @@
             
             .controls-panel {
                 width: 100%;
+            }
+
+            .linkedin-link {
+                top: 10px;
+                right: 10px;
             }
         }
     </style>
@@ -375,7 +373,6 @@
                         <option value="gamma">Gamma (Γ)</option>
                         <option value="vanna">Vanna</option>
                         <option value="charm">Charm</option>
-                        
                     </select>
                 </div>
                 
@@ -473,7 +470,6 @@
                     <h4>Delta (Δ)</h4>
                     <p>Call: \(e^{-qT} N(d_1)\)</p>
                     <p>Put: \(-e^{-qT} N(-d_1)\)</p>
-
                   </div>
                   
                   <div class="formula">
@@ -517,11 +513,11 @@
                       <li>\(\sigma\) is the volatility</li>
                       <li>\(T\) is the time to expiry</li>
                     </ul>
-                  </div></div>
+                  </div>
                 </div>
-                <div class="footer">
-                    <p>Created by <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank" rel="noopener noreferrer">Johannes Dassler</a></p>
-                </div>
+              </div>
+              <div class="footer">
+                <p>Created by <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank" rel="noopener noreferrer">Johannes Dassler</a></p>
               </div>
         </div>
         <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank" rel="noopener noreferrer" class="linkedin-link">
@@ -537,9 +533,8 @@
         const DEFAULT_RATE = 0.03;
         const DEFAULT_DIVIDEND = 0.00001;
         
-        const daysToExpiryInput = document.getElementById('daysToExpiryInput');
-
         // DOM elements
+        const daysToExpiryInput = document.getElementById('daysToExpiryInput');
         const greekSelect = document.getElementById('greekSelect');
         const optionTypeSelect = document.getElementById('optionTypeSelect');
         const positionTypeSelect = document.getElementById('positionTypeSelect');
@@ -584,7 +579,6 @@
             loadingElement.style.display = 'none';
             fallbackContainer.style.display = 'block';
             
-            // Initialize 2D mode when button is clicked
             show2DButton.addEventListener('click', function() {
                 use2DMode = true;
                 fallbackContainer.style.display = 'none';
@@ -624,7 +618,6 @@
             legend.style.justifyContent = 'center';
             legend.style.color = '#ffffff';
             
-            // Show more strikes in the legend (in steps of 100 for readability)
             [5800, 5900, 6000, 6100, 6200].forEach(strike => {
                 const item = document.createElement('div');
                 item.style.display = 'flex';
@@ -792,7 +785,7 @@
             });
         }
 
-        // Error function implementation (Math.erf is not available in all JavaScript environments)
+        // Error function implementation (for standard normal CDF)
         function erf(x) {
             // Constants
             const a1 = 0.254829592;
@@ -841,8 +834,8 @@
             const vega = S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T);
             const vanna = (-Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/100;
             const charm = (q * Math.exp(-q * T) * normCDF(d1) - Math.exp(-q * T) * normPDF(d1) * 
-                        (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T))/251);
-                        const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) - 
+                        (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T)))/251;
+            const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) - 
               (r * K * Math.exp(-r * T) * normCDF(d2)) + 
               (q * S * Math.exp(-q * T) * normCDF(d1)))/251;
             
@@ -853,7 +846,6 @@
         function calculatePutOption(S, K, r, q, sigma, T) {
             const { d1, d2 } = calculateDs(S, K, r, q, sigma, T);
             
-            // Using the formulas provided in the original request
             const price = K * Math.exp(-r * T) * normCDF(-d2) - S * Math.exp(-q * T) * normCDF(-d1);
             const delta = -Math.exp(-q * T) * normCDF(-d1);
             const gamma = Math.exp(-q * T) * normPDF(d1) / (S * sigma * Math.sqrt(T));
@@ -861,7 +853,7 @@
             const vanna = (-Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/100;
             const charm = (-q * Math.exp(-q * T) * normCDF(-d1) - Math.exp(-q * T) * normPDF(d1) * 
                         (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T)))/251;
-                        const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) + 
+            const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) + 
               (r * K * Math.exp(-r * T) * normCDF(-d2)) - 
               (q * S * Math.exp(-q * T) * normCDF(-d1)))/251;
             
@@ -870,32 +862,31 @@
 
         // Helper function to get the selected Greek value based on option type and position
         function getGreekValue(S, K, iv) {
-    const greek = greekSelect.value;
-    const optionType = optionTypeSelect.value;
-    const positionType = positionTypeSelect.value;
-    
-    // Use the days to expiry input to calculate T
-    const daysToExpiry = parseFloat(daysToExpiryInput.value) || 1; // Default to 1 if invalid
-    const T = daysToExpiry / 365; // Trading days in a year
-    
-    const calculation = optionType === 'call' 
-        ? calculateCallOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T)
-        : calculatePutOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T);
-    
-    let value = calculation[greek];
-    
-    // Adjust for short positions (negative value)
-    if (positionType === 'short') {
-        value = -value;
-    }
-    
-    return value;
-}
+            const greek = greekSelect.value;
+            const optionType = optionTypeSelect.value;
+            const positionType = positionTypeSelect.value;
+            
+            // Use the days to expiry input to calculate T
+            const daysToExpiry = parseFloat(daysToExpiryInput.value) || 1; // Default to 1 if invalid
+            const T = daysToExpiry / 365; // Trading days in a year
+            
+            const calculation = optionType === 'call' 
+                ? calculateCallOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T)
+                : calculatePutOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T);
+            
+            let value = calculation[greek];
+            
+            // Adjust for short positions (negative value)
+            if (positionType === 'short') {
+                value = -value;
+            }
+            
+            return value;
+        }
 
         // Generate data with reduced complexity for faster initial loading
         function generateReducedData(initialLoad) {
             // For initial load, use a reduced data set
-            // Modified to use 5-strike steps for higher resolution
             const strikeStep = initialLoad ? 10 : 5;  // Smaller steps for more detail
             const ivStep = initialLoad ? 0.05 : 0.02; // Larger steps for initial load
             
@@ -927,26 +918,19 @@
             return data;
         }
 
-        // Generate color based on value (for surface coloring) - Green theme for dark background
+        // Generate color based on value (for surface coloring)
         function getColorForValue(value, min, max) {
-    // Normalize value to 0-1 range
-    const normalized = (value - min) / (max - min);
-    
-    // Red to green gradient (red for low values, green for high values)
-    let r, g, b;
-    
-    // Red component (high for low values, low for high values)
-    r = 1 - normalized;
-    
-    // Green component (low for low values, high for high values)
-    g = normalized;
-    
-    // Blue component (keep minimal for red-green emphasis)
-    b = 0.1;
-    
-    // Convert to RGB color
-    return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
-}
+            // Normalize value to 0-1 range
+            const normalized = (value - min) / (max - min);
+            
+            // Red to green gradient
+            let r = 1 - normalized;
+            let g = normalized;
+            let b = 0.1;
+            
+            // Convert to RGB color
+            return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+        }
 
         // Map Greek names to display names
         function getGreekDisplayName(greek) {
@@ -966,29 +950,25 @@
             if (parameters === undefined) parameters = {};
             
             const fontface = parameters.fontface || 'Arial';
-            // Increase default font size and multiply passed font size by 1.5
             const fontsize = parameters.fontsize ? parameters.fontsize * 1.5 : 36; 
-            const textColor = parameters.textColor || { r:1.0, g:1.0, b:1.0, a:1.0 }; // Default to white for dark background
+            const textColor = parameters.textColor || { r:1.0, g:1.0, b:1.0, a:1.0 };
             
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             
-            // Make canvas even larger for better text clarity with bigger fonts
-            canvas.width = 768; // Tripled from original
-            canvas.height = 384; // Tripled from original
+            canvas.width = 768;
+            canvas.height = 384;
             
-            // No background, just clear the canvas
             context.clearRect(0, 0, canvas.width, canvas.height);
             
             context.font = "Bold " + fontsize + "px " + fontface;
             
-            // Text color
             context.fillStyle = "rgba(" + textColor.r * 255 + "," + textColor.g * 255 + ","
                                         + textColor.b * 255 + "," + textColor.a + ")";
             context.textAlign = "center";
             context.textBaseline = "middle";
             context.fillText(text, canvas.width/2, canvas.height/2);
-            // Canvas contents will be used for a texture
+            
             const texture = new THREE.CanvasTexture(canvas);
             texture.needsUpdate = true;
             
@@ -998,7 +978,6 @@
             });
             const sprite = new THREE.Sprite(spriteMaterial);
             
-            // Adjust scale to match text size
             const textWidth = context.measureText(text).width;
             sprite.scale.set(textWidth/6 + 50, 50, 1.0);
             
@@ -1012,7 +991,7 @@
                 if (child.isLight) scene.remove(child);
             });
             
-            // Add stronger ambient light for dark background
+            // Add ambient light for dark background
             const ambientLight = new THREE.AmbientLight(0xcccccc, 0.7);
             scene.add(ambientLight);
             
@@ -1027,32 +1006,30 @@
             scene.add(secondaryLight);
         }
 
-        // Get color for a specific strike price - adjusted for inverted axis with green theme
+        // Get color for a specific strike price
         function getColorForStrike(strike) {
-    // Map strike price to a color using a gradient
-    const minStrike = 5800;
-    const maxStrike = 6200;
-    const t = (strike - minStrike) / (maxStrike - minStrike);
-    
-    // Red to green gradient for strike prices
-    // Higher strikes will be greener, lower strikes will be redder
-    return new THREE.Color(1 - t, t, 0.1);
-}
+            // Map strike price to a color using a gradient
+            const minStrike = 5800;
+            const maxStrike = 6200;
+            const t = (strike - minStrike) / (maxStrike - minStrike);
+            
+            // Red to green gradient for strike prices
+            return new THREE.Color(1 - t, t, 0.1);
+        }
 
         // Initialize Three.js scene
         function init() {
             try {
                 initializationAttempted = true;
-                console.log("Initializing 3D scene...");
                 
                 // Create scene
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x111624); // Dark blue-black background
+                scene.background = new THREE.Color(0x111624);
                 
                 // Create camera
                 const aspect = plotContainer.clientWidth / plotContainer.clientHeight;
                 camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 2000);
-                camera.position.set(0, 0, -600); // Adjusted for inverted X-axis
+                camera.position.set(0, 0, -600);
                 camera.lookAt(0, 0, 0);
                 
                 // Create renderer with higher quality
@@ -1064,8 +1041,6 @@
                 renderer.setSize(plotContainer.clientWidth, plotContainer.clientHeight);
                 plotContainer.appendChild(renderer.domElement);
                 
-                console.log("Renderer created");
-                
                 // Set up enhanced lighting for dark theme
                 setupLighting();
                 
@@ -1075,9 +1050,7 @@
                     controls.enableDamping = true;
                     controls.dampingFactor = 0.05;
                     controls.rotateSpeed = 0.5;
-                    console.log("Controls initialized");
                 } else {
-                    console.error("THREE.OrbitControls not found. Make sure it's loaded properly.");
                     throw new Error("OrbitControls not loaded");
                 }
                 
@@ -1092,7 +1065,6 @@
                 // Add mouse move event listener for interaction
                 renderer.domElement.addEventListener('mousemove', onMouseMove, false);
                 
-                console.log("Starting to update plot...");
                 // Create initial plot with reduced data
                 setTimeout(() => {
                     updatePlot(true); // true for reduced data set on initial load
@@ -1105,7 +1077,6 @@
                 }, 10);
                 
             } catch (err) {
-                console.error("Error initializing 3D scene:", err);
                 clearTimeout(initializationTimeout);
                 showFallbackUI("Error initializing 3D visualization. Switching to 2D mode.");
             }
@@ -1116,7 +1087,6 @@
             if (use2DMode || !surfaceMesh) return;
             
             // Calculate mouse position in normalized device coordinates
-            // (-1 to +1) for both components
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1140,8 +1110,6 @@
                 
                 // Get vertex indices
                 const a = face.a;
-                const b = face.b;
-                const c = face.c;
                 
                 // Get attributes from vertices
                 const positions = geometry.attributes.position;
@@ -1155,7 +1123,6 @@
                 const ivRange = 0.9 - 0.1;
                 
                 // Calculate the nearest data point to the intersection
-                // This is a simplification - for better accuracy, we'd interpolate between vertices
                 const vertexIndex = a; // Use one of the vertices of the face
                 
                 // Extract data based on position (convert from scene coordinates back to data values)
@@ -1171,7 +1138,6 @@
                 iv = ((z / gridSize) * ivRange/2 + 0.5).toFixed(2);
                 
                 // Use pre-calculated value for the Greek
-                // For more accuracy, recompute the value based on strike and IV
                 value = getGreekValue(DEFAULT_SPOT, strike, parseFloat(iv)).toFixed(4);
                 
                 // Update value display
@@ -1202,7 +1168,6 @@
         // Update the 3D plot
         function updatePlot(initialLoad = false) {
             try {
-                console.log("Updating plot...");
                 loadingElement.style.display = 'flex';
                 loadingElement.innerHTML = `
                     <div class="loading-spinner"></div>
@@ -1255,7 +1220,6 @@
                 
                 // Generate new data
                 const surfaceData = generateReducedData(initialLoad);
-                console.log("Data generated, points:", surfaceData.length * (surfaceData[0] ? surfaceData[0].length : 0));
                 
                 // Find min/max values for scaling
                 let minValue = Infinity;
@@ -1272,22 +1236,21 @@
                 createBackgroundGrid(minValue, maxValue);
                 
                 // Scaling factors for better visualization
-                const gridSize = 150; // Smaller grid for tighter visualization
+                const gridSize = 150;
                 const strikeRange = 6200 - 5800;
                 const ivRange = 0.9 - 0.1;
                 const valueRange = maxValue - minValue || 1; // Avoid division by zero
                 
                 // Use negative scaleX to invert the X-axis
-                const scaleX = -gridSize / (strikeRange/2);   // Negative scale to invert X axis
-                const scaleY = gridSize / (valueRange/2);    // Value Y axis
-                const scaleZ = gridSize / (ivRange/2);       // IV Z axis
+                const scaleX = -gridSize / (strikeRange/2);
+                const scaleY = gridSize / (valueRange/2);
+                const scaleZ = gridSize / (ivRange/2);
                 
                 // Offset to center the plot
                 const offsetX = -6000;
                 const offsetY = -(minValue + maxValue) / 2;
                 const offsetZ = -0.5;
                 
-                console.log("Creating surface...");
                 loadingElement.innerHTML = `
                     <div class="loading-spinner"></div>
                     <div>Creating visualization...</div>
@@ -1314,7 +1277,7 @@
                         
                         vertices.push(x, y, z);
                         
-                        // Color based on the value (using green color map for dark theme)
+                        // Color based on the value
                         const color = getColorForValue(point.value, minValue, maxValue);
                         const rgb = color.match(/\d+/g).map(Number);
                         
@@ -1345,13 +1308,13 @@
                 
                 // Enhanced material for better appearance on dark background
                 const materialSurface = new THREE.MeshPhongMaterial({
-    vertexColors: true,
-    side: THREE.DoubleSide,
-    shininess: 70,
-    flatShading: false,
-    transparent: false, // Make sure this is false to properly block grid
-    depthWrite: true    // Ensure surface writes to depth buffer
-});
+                    vertexColors: true,
+                    side: THREE.DoubleSide,
+                    shininess: 70,
+                    flatShading: false,
+                    transparent: false,
+                    depthWrite: true
+                });
                 
                 surfaceMesh = new THREE.Mesh(geometrySurface, materialSurface);
                 scene.add(surfaceMesh);
@@ -1363,7 +1326,6 @@
                 // Add title and axis labels
                 addAxisLabels(minValue, maxValue);
                 
-                console.log("Plot updated successfully");
                 loadingElement.style.display = 'none';
                 valueDisplay.style.display = 'block';
                 
@@ -1389,7 +1351,6 @@
                 }
                 
             } catch (err) {
-                console.error("Error updating plot:", err);
                 loadingElement.innerHTML = `
                     <div>Error generating visualization</div>
                     <div class="loading-tips">Try refreshing the page or use 2D mode</div>
@@ -1406,10 +1367,9 @@
             }
         }
         
-        // Add lines along each strike price curve - adjusted for inverted X-axis
+        // Add lines along each strike price curve
         function addStrikeLines(minValue, maxValue) {
             // Use more strike prices to highlight with smaller steps
-            // Use 20-step increments to avoid visual clutter, but include more lines
             const keyStrikes = [];
             for (let strike = 5800; strike <= 6200; strike += 20) {
                 keyStrikes.push(strike);
@@ -1421,7 +1381,7 @@
             const valueRange = maxValue - minValue || 1;
             
             // Use negative scaleX to invert the X-axis
-            const scaleX = -gridSize / (strikeRange/2);  // Negative value to invert
+            const scaleX = -gridSize / (strikeRange/2);
             const scaleY = gridSize / (valueRange/2);
             const scaleZ = gridSize / (ivRange/2);
             
@@ -1448,7 +1408,7 @@
                 // Create line geometry
                 const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
                 
-                // Create line material with color based on strike - green theme
+                // Create line material
                 const color = getColorForStrike(strike);
                 const lineMaterial = new THREE.LineBasicMaterial({
                     color: 0x000000,
@@ -1469,12 +1429,10 @@
                     
                     const strikeLabel = createTextSprite(strike.toString(), {
                         fontsize: 30,
-                        textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 } // White text for dark background
+                        textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
                     });
                     
-                    // With inverted X axis, adjust label position
                     strikeLabel.position.set(lastPoint.x - 10, lastPoint.y, lastPoint.z);
-                    
                     strikeLabel.scale.set(120, 60, 1.0);
                     scene.add(strikeLabel);
                     strikeLines.push(strikeLabel);
@@ -1482,7 +1440,7 @@
             });
         }
         
-        // Create a background grid with labeled axes - dark theme version
+        // Create a background grid with labeled axes
         function createBackgroundGrid(minValue, maxValue) {
             const gridSize = 150;
             
@@ -1492,13 +1450,13 @@
             
             // Material with depthWrite = false to ensure grid is always visible
             const gridMaterial = new THREE.LineBasicMaterial({ 
-    color: 0x000000,
-    transparent: true,
-    opacity: 0.4,      // Higher opacity for better visibility
-    depthWrite: false, // Don't write to depth buffer (important)
-    depthTest: true,   // DO test against depth buffer to be blocked by surface
-    linewidth: 1.5     // Slightly thicker lines where supported
-});
+                color: 0x000000,
+                transparent: true,
+                opacity: 0.4,
+                depthWrite: false,
+                depthTest: true,
+                linewidth: 1.5
+            });
             
             // Denser grid
             const minorGridStep = 15; 
@@ -1559,7 +1517,7 @@
             
             // Axes with brighter color
             const axesMaterial = new THREE.LineBasicMaterial({ 
-                color: 0x4f8fff,  // Bright blue axes for dark background
+                color: 0x4f8fff,
                 linewidth: 2,
                 transparent: false,
                 opacity: 1.0
@@ -1598,7 +1556,7 @@
             // White text for axis labels on dark background
             const axisLabelFontSize = 30;
             const axisLabelScale = new THREE.Vector3(120, 60, 1.0);
-            const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }; // White text
+            const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             
             // Strike (X-axis) labels - inverted order and at foreground
             const strikeValues = [6200, 6100, 6000, 5900, 5800];
@@ -1644,19 +1602,10 @@
             }
         }
 
-        // Add title and main axis labels - dark theme version
+        // Add title and main axis labels
         function addAxisLabels(minValue, maxValue) {
             const gridSize = 150;
-            const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }; // White text for dark background
-            
-            // Title
-           // const title = createTextSprite(`${getGreekDisplayName(greekSelect.value)} for ${positionTypeSelect.value} ${optionTypeSelect.value} options`, {
-               //fontsize: 28,
-                //textColor: textColor
-            //});
-            //title.position.set(0, 180, 0);
-            //scene.add(title);
-            //meshes.push(title);
+            const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             
             // X Label
             const xLabel = createTextSprite("Strike Price (K)", {
@@ -1722,7 +1671,6 @@
             try {
                 init();
             } catch (e) {
-                console.error('Failed to initialize 3D visualization:', e);
                 clearTimeout(initializationTimeout);
                 showFallbackUI('Failed to initialize 3D visualization. Switching to 2D mode.');
             }
@@ -1763,19 +1711,20 @@
                 updatePlot();
             }
         });
+        
         daysToExpiryInput.addEventListener('change', () => {
-    // Validate input: ensure it's between 0.01 and 365
-    let days = parseFloat(daysToExpiryInput.value);
-    if (isNaN(days) || days < 0.000001) days = 0.000001;
-    if (days > 365) days = 365;
-    daysToExpiryInput.value = days; // Update with validated value
-    
-    if (use2DMode) {
-        init2DMode();
-    } else {
-        updatePlot();
-    }
-});
+            // Validate input: ensure it's between 0.01 and 365
+            let days = parseFloat(daysToExpiryInput.value);
+            if (isNaN(days) || days < 0.000001) days = 0.000001;
+            if (days > 365) days = 365;
+            daysToExpiryInput.value = days; // Update with validated value
+            
+            if (use2DMode) {
+                init2DMode();
+            } else {
+                updatePlot();
+            }
+        });
     </script>
 </body>
 </html>
