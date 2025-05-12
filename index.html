@@ -832,7 +832,7 @@
             const delta = Math.exp(-q * T) * normCDF(d1);
             const gamma = Math.exp(-q * T) * normPDF(d1) / (S * sigma * Math.sqrt(T));
             const vega = S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T);
-            const vanna = (Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/100;
+            const vanna = (Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/(-100);
             const charm = (-q * Math.exp(-q * T) * normCDF(d1) - Math.exp(-q * T) * normPDF(d1) * 
             (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T)))/(-251);
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) - 
@@ -850,7 +850,7 @@
             const delta = -Math.exp(-q * T) * normCDF(-d1);
             const gamma = Math.exp(-q * T) * normPDF(d1) / (S * sigma * Math.sqrt(T));
             const vega = S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T);
-            const vanna = (Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/100;
+            const vanna = (Math.exp(-q * T) * normPDF(d1) * (d2 / sigma))/(-100);
             const charm = (q * Math.exp(-q * T) * normCDF(-d1) - Math.exp(-q * T) * normPDF(d1) * 
             (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T)))/(-251);
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) + 
