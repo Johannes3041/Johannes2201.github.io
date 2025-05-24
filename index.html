@@ -401,7 +401,7 @@
                     <ul>
                         <li>standard normal distribution</li>
                         <li>Spot (S): 6000</li>
-                        <li>Strike (K): 5800-6200 in steps of 5</li>
+                        <li>Strike (K): 5600-6400 in steps of 5</li>
                         <li>Interest Rate (r): 0.03</li>
                         <li>Dividend Yield (q): 0.00001</li>
                         <li>Time to Expiry (τ): Input/365 </li>
@@ -554,6 +554,8 @@
         let gridGroup;
         let strikeLines = [];
         let strikeData = {};
+        let minValueGlobal = 0;
+        let maxValueGlobal = 0;
 
         // Fallback mode flag
         let use2DMode = false;
@@ -674,6 +676,8 @@
             strikes.forEach(strike => {
                 ivValues.forEach(iv => {
                     const value = getGreekValue(DEFAULT_SPOT, strike, iv);
+                    minValueGlobal = minValue;
+                    maxValueGlobal = maxValue;
                     minValue = Math.min(minValue, value);
                     maxValue = Math.max(maxValue, value);
                 });
@@ -886,37 +890,31 @@
 
         // Generate data with reduced complexity for faster initial loading
         function generateReducedData(initialLoad) {
-            // For initial load, use a reduced data set
-            const strikeStep = initialLoad ? 10 : 5;  // Smaller steps for more detail
-            const ivStep = initialLoad ? 0.05 : 0.02; // Larger steps for initial load
-            
-            const data = [];
-            
-            // Clear strike data object
-            strikeData = {};
-            
-            // Strike prices from 5800 to 6200 in smaller steps
-            for (let strike = 5800; strike <= 6200; strike += strikeStep) {
-                const strikeDataPoints = [];
-                
-                // IV values from 0.10 to 0.90 in steps
-                for (let iv = 0.10; iv <= 0.90; iv += ivStep) {
-                    const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
-                    strikeDataPoints.push({
-                        strike,
-                        iv,
-                        value: greekValue
-                    });
-                }
-                
-                data.push(strikeDataPoints);
-                
-                // Store data by strike price for drawing strike lines
-                strikeData[strike] = strikeDataPoints;
-            }
-            
-            return data;
+    const strikeStep = initialLoad ? 10 : 1;
+    const ivStep = initialLoad ? 0.05 : 0.02;
+    
+    const data = [];
+    strikeData = {};
+    
+    // CHANGED: Strike prices from 5600 to 6400 instead of 5800 to 6200
+    for (let strike = 5600; strike <= 6400; strike += strikeStep) {
+        const strikeDataPoints = [];
+        
+        for (let iv = 0.10; iv <= 0.90; iv += ivStep) {
+            const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
+            strikeDataPoints.push({
+                strike,
+                iv,
+                value: greekValue
+            });
         }
+        
+        data.push(strikeDataPoints);
+        strikeData[strike] = strikeDataPoints;
+    }
+    
+    return data;
+}
 
         // Generate color based on value (for surface coloring)
         function getColorForValue(value, min, max) {
@@ -1008,14 +1006,50 @@
 
         // Get color for a specific strike price
         function getColorForStrike(strike) {
-            // Map strike price to a color using a gradient
-            const minStrike = 5800;
-            const maxStrike = 6200;
-            const t = (strike - minStrike) / (maxStrike - minStrike);
-            
-            // Red to green gradient for strike prices
-            return new THREE.Color(1 - t, t, 0.1);
-        }
+    const minStrike = 5600; // CHANGED: from 5800
+    const maxStrike = 6400; // CHANGED: from 6200
+    const t = (strike - minStrike) / (maxStrike - minStrike);
+    
+    let r, g, b;
+    
+    if (t < 0.5) {
+        const localT = t * 2;
+        r = 0.1 + localT * 0.9;
+        g = 0.3 + localT * 0.7;
+        b = 1.0;
+    } else {
+        const localT = (t - 0.5) * 2;
+        r = 1.0;
+        g = 1.0 - localT * 0.9;
+        b = 1.0 - localT * 0.9;
+    }
+    
+    return new THREE.Color(r, g, b);
+}
+function getColorForIV(iv) {
+    const minIV = 0.10;
+    const maxIV = 0.90;
+    const t = (iv - minIV) / (maxIV - minIV);
+    
+    // Blue to white to red gradient based on IV
+    let r, g, b;
+    
+    if (t < 0.5) {
+        // Deep blue to white (low IV to medium IV)
+        const localT = t * 2;
+        r = 0.1 + localT * 0.9;  // 0.1 to 1.0
+        g = 0.3 + localT * 0.7;  // 0.3 to 1.0
+        b = 1.0;                 // Always full blue
+    } else {
+        // White to deep red (medium IV to high IV)
+        const localT = (t - 0.5) * 2;
+        r = 1.0;                 // Always full red
+        g = 1.0 - localT * 0.9;  // 1.0 to 0.1
+        b = 1.0 - localT * 0.9;  // 1.0 to 0.1
+    }
+    
+    return new THREE.Color(r, g, b);
+}
 
         // Initialize Three.js scene
         function init() {
@@ -1024,7 +1058,7 @@
                 
                 // Create scene
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x111624);
+                scene.background = new THREE.Color(0x000000);
                 
                 // Create camera
                 const aspect = plotContainer.clientWidth / plotContainer.clientHeight;
@@ -1084,74 +1118,70 @@
 
         // Mouse move handler for interaction
         function onMouseMove(event) {
-            if (use2DMode || !surfaceMesh) return;
-            
-            // Calculate mouse position in normalized device coordinates
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        }
+    if (use2DMode || strikeLines.length === 0) return; // Check surfaceMesh instead of !surfaceMesh
+    
+    // Calculate mouse position in normalized device coordinates
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+}
 
         // Update value display based on raycaster intersection
         function updateValueDisplay() {
-            if (!raycaster || !camera || !surfaceMesh || !mouse) return;
-            
-            // Update the picking ray with the camera and mouse position
-            raycaster.setFromCamera(mouse, camera);
-            
-            // Calculate objects intersecting the picking ray
-            const intersects = raycaster.intersectObject(surfaceMesh);
-            
-            if (intersects.length > 0) {
-                // Get position data from the closest intersection
-                const intersection = intersects[0];
-                const face = intersection.face;
-                const geometry = surfaceMesh.geometry;
-                
-                // Get vertex indices
-                const a = face.a;
-                
-                // Get attributes from vertices
-                const positions = geometry.attributes.position;
-                
-                // Calculate barycentric coordinates to get exact values at intersection
-                const baryCoord = intersection.barycoord || { x: 1/3, y: 1/3, z: 1/3 };
-                
-                // Variables for holding our extracted values
-                const gridSize = 150;
-                const strikeRange = 6200 - 5800;
-                const ivRange = 0.9 - 0.1;
-                
-                // Calculate the nearest data point to the intersection
-                const vertexIndex = a; // Use one of the vertices of the face
-                
-                // Extract data based on position (convert from scene coordinates back to data values)
-                let strike, iv, value;
-                
-                // Convert coordinates back to data values
-                const x = positions.getX(vertexIndex);
-                const y = positions.getY(vertexIndex);
-                const z = positions.getZ(vertexIndex);
-                
-                // Account for inverted X-axis scale in conversion
-                strike = Math.round((-x / gridSize) * strikeRange/2 + 6000);
-                iv = ((z / gridSize) * ivRange/2 + 0.5).toFixed(2);
-                
-                // Use pre-calculated value for the Greek
-                value = getGreekValue(DEFAULT_SPOT, strike, parseFloat(iv)).toFixed(4);
-                
-                // Update value display
-                strikeValueElement.textContent = strike;
-                ivValueElement.textContent = iv;
-                greekValueElement.textContent = value;
-            } else {
-                // No intersection, show default values
-                strikeValueElement.textContent = '-';
-                ivValueElement.textContent = '-';
-                greekValueElement.textContent = '-';
-            }
+    if (!raycaster || !camera || strikeLines.length === 0 || !mouse) return;
+    
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Intersect with all the objects (including invisible tube meshes)
+    const intersectableObjects = strikeLines.filter(obj => 
+        obj.geometry && 
+        (obj.geometry.attributes || obj.geometry.parameters) && 
+        !obj.material.map // Exclude text sprites
+    );
+    const intersects = raycaster.intersectObjects(intersectableObjects);
+    
+    if (intersects.length > 0) {
+        const intersection = intersects[0];
+        const point = intersection.point;
+        const object = intersection.object;
+        
+        const gridSize = 150;
+        const strikeRange = 6400 - 5600;
+        const ivRange = 0.9 - 0.1;
+        
+        const scaleX = -gridSize / (strikeRange/2);
+        const scaleZ = gridSize / (ivRange/2);
+        
+        const offsetX = -6000;
+        const offsetZ = -0.5;
+        
+        // Convert coordinates back to data values
+        const strike = Math.round((point.x / scaleX) - offsetX);
+        let iv = parseFloat(((point.z / scaleZ) - offsetZ).toFixed(2));
+        
+        // If we hit a tube mesh with stored IV data, use that for more accuracy
+        if (object.userData && object.userData.iv !== undefined) {
+            iv = object.userData.iv;
         }
-
+        
+        // Clamp to valid ranges
+        const clampedStrike = Math.max(5600, Math.min(6400, strike));
+        const clampedIV = Math.max(0.10, Math.min(0.90, iv));
+        
+        // Get the actual Greek value from the intersection point's Y coordinate
+        const scaleY = gridSize / ((maxValueGlobal - minValueGlobal) || 1);
+        const offsetY = -(minValueGlobal + maxValueGlobal) / 2;
+        const actualValue = (point.y / scaleY) - offsetY;
+        
+        strikeValueElement.textContent = clampedStrike;
+        ivValueElement.textContent = clampedIV.toFixed(2);
+        greekValueElement.textContent = actualValue.toFixed(4);
+    } else {
+        strikeValueElement.textContent = '-';
+        ivValueElement.textContent = '-';
+        greekValueElement.textContent = '-';
+    }
+}
         // Animation loop
         function animate() {
             if (use2DMode) return; // Don't animate in 2D mode
@@ -1231,13 +1261,15 @@
                         maxValue = Math.max(maxValue, point.value);
                     });
                 });
+                minValueGlobal = minValue;
+                maxValueGlobal = maxValue;
                 
                 // Create reference grid with labels
                 createBackgroundGrid(minValue, maxValue);
                 
                 // Scaling factors for better visualization
                 const gridSize = 150;
-                const strikeRange = 6200 - 5800;
+                const strikeRange = 6400 - 5600;
                 const ivRange = 0.9 - 0.1;
                 const valueRange = maxValue - minValue || 1; // Avoid division by zero
                 
@@ -1307,21 +1339,24 @@
                 geometrySurface.computeVertexNormals();
                 
                 // Enhanced material for better appearance on dark background
-                const materialSurface = new THREE.MeshPhongMaterial({
-                    vertexColors: true,
-                    side: THREE.DoubleSide,
-                    shininess: 70,
-                    flatShading: false,
-                    transparent: false,
-                    depthWrite: true
-                });
+                //const materialSurface = new THREE.MeshPhongMaterial({
+                //   vertexColors: true,
+                //    side: THREE.DoubleSide,
+                //    shininess: 70,
+                //    flatShading: false,
+                //    transparent: false,
+                //    depthWrite: true
+                //});
                 
-                surfaceMesh = new THREE.Mesh(geometrySurface, materialSurface);
-                scene.add(surfaceMesh);
-                meshes.push(surfaceMesh);
+                //surfaceMesh = new THREE.Mesh(geometrySurface, materialSurface);
+                //scene.add(surfaceMesh);
+                //meshes.push(surfaceMesh);
                 
                 // Add lines along the strike curves (one line for each strike)
-                addStrikeLines(minValue, maxValue);
+                addIVLines(minValue, maxValue);
+                
+                // CREATE THE INVISIBLE INTERACTION SURFACE
+                //createInteractionSurface(minValue, maxValue);
                 
                 // Add title and axis labels
                 addAxisLabels(minValue, maxValue);
@@ -1366,97 +1401,124 @@
                 });
             }
         }
-        
+        function createInteractionSurface(minValue, maxValue) {
+    // Create a simplified invisible surface for mouse interaction
+    const gridSize = 150;
+    const strikeRange = 6400 - 5600; // Correct range
+    const ivRange = 0.9 - 0.1;
+    const valueRange = maxValue - minValue || 1;
+    
+    const scaleX = -gridSize / (strikeRange/2);
+    const scaleY = gridSize / (valueRange/2);
+    const scaleZ = gridSize / (ivRange/2);
+    
+    const offsetX = -6000;
+    const offsetY = -(minValue + maxValue) / 2;
+    const offsetZ = -0.5;
+    
+    // Create a simple plane geometry for interaction
+    const geometry = new THREE.PlaneGeometry(gridSize * 2, gridSize * 2, 40, 40);
+    
+    // Position and rotate the plane to match the data orientation
+    geometry.rotateX(-Math.PI / 2); // Rotate to be horizontal
+    geometry.translate(0, offsetY, 0); // Move to center
+    
+    // Create invisible material
+    const material = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide
+    });
+    
+    // Create the mesh
+    surfaceMesh = new THREE.Mesh(geometry, material);
+    scene.add(surfaceMesh);
+    meshes.push(surfaceMesh);
+}
+
         // Add lines along each strike price curve
-        function addStrikeLines(minValue, maxValue) {
-            // Use more strike prices to highlight with smaller steps
-            const keyStrikes = [];
-            for (let strike = 5800; strike <= 6200; strike += 20) {
-                keyStrikes.push(strike);
-            }
+        function addIVLines(minValue, maxValue) {
+    const keyIVs = [];
+    for (let iv = 0.10; iv <= 0.90; iv += 0.01) {
+        keyIVs.push(parseFloat(iv.toFixed(2)));
+    }
+    
+    const gridSize = 150;
+    const strikeRange = 6400 - 5600; // CHANGED: 800 instead of 400
+    const ivRange = 0.9 - 0.1;
+    const valueRange = maxValue - minValue || 1;
+    
+    const scaleX = -gridSize / (strikeRange/2);
+    const scaleY = gridSize / (valueRange/2);
+    const scaleZ = gridSize / (ivRange/2);
+    
+    const offsetX = -6000;
+    const offsetY = -(minValue + maxValue) / 2;
+    const offsetZ = -0.5;
+    
+    keyIVs.forEach(iv => {
+        const linePoints = [];
+        
+        // CHANGED: Create points from 5600 to 6400
+        for (let strike = 5600; strike <= 6400; strike += 1) {
+            const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
             
-            const gridSize = 150;
-            const strikeRange = 6200 - 5800;
-            const ivRange = 0.9 - 0.1;
-            const valueRange = maxValue - minValue || 1;
+            const x = (strike + offsetX) * scaleX;
+            const y = (greekValue + offsetY) * scaleY;
+            const z = (iv + offsetZ) * scaleZ;
             
-            // Use negative scaleX to invert the X-axis
-            const scaleX = -gridSize / (strikeRange/2);
-            const scaleY = gridSize / (valueRange/2);
-            const scaleZ = gridSize / (ivRange/2);
-            
-            const offsetX = -6000;
-            const offsetY = -(minValue + maxValue) / 2;
-            const offsetZ = -0.5;
-            
-            // Create a line for each strike price
-            keyStrikes.forEach(strike => {
-                if (!strikeData[strike]) return; // Skip if no data for this strike
-                
-                const points = strikeData[strike];
-                const linePoints = [];
-                
-                // Convert data points to 3D coordinates
-                points.forEach(point => {
-                    const x = (point.strike + offsetX) * scaleX;
-                    const y = (point.value + offsetY) * scaleY;
-                    const z = (point.iv + offsetZ) * scaleZ;
-                    
-                    linePoints.push(new THREE.Vector3(x, y, z));
-                });
-                
-                // Create line geometry
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-                
-                // Create line material
-                const color = getColorForStrike(strike);
-                const lineMaterial = new THREE.LineBasicMaterial({
-                    color: 0x000000,
-                    linewidth: 3,
-                    transparent: false,
-                    opacity: 1.0
-                });
-                
-                // Create line and add to scene
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                scene.add(line);
-                strikeLines.push(line);
-                
-                // Add strike labels only for every 100 points to avoid clutter
-                if (strike % 100 === 0) {
-                    // Use the last point (back of graph)
-                    const lastPoint = linePoints[linePoints.length - 1]; 
-                    
-                    const strikeLabel = createTextSprite(strike.toString(), {
-                        fontsize: 30,
-                        textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
-                    });
-                    
-                    strikeLabel.position.set(lastPoint.x - 10, lastPoint.y, lastPoint.z);
-                    strikeLabel.scale.set(120, 60, 1.0);
-                    scene.add(strikeLabel);
-                    strikeLines.push(strikeLabel);
-                }
-            });
+            linePoints.push(new THREE.Vector3(x, y, z));
         }
         
+        if (linePoints.length > 0) {
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+            
+            const color = getColorForIV(iv);
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: color,
+                linewidth: 1,
+                transparent: false,
+                opacity: 1.0
+            });
+            
+            const line = new THREE.Line(lineGeometry, lineMaterial);
+            scene.add(line);
+            strikeLines.push(line);
+            // Create an invisible thicker line for better mouse interaction
+line.userData = { iv: iv };
+            if (Math.abs(iv % 0.1) < 0.005) {
+                const lastPoint = linePoints[linePoints.length - 1];
+                
+                const ivLabel = createTextSprite(iv.toFixed(1), {
+                    fontsize: 30,
+                    textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
+                });
+                
+                ivLabel.position.set(lastPoint.x - 10, lastPoint.y, lastPoint.z);
+                ivLabel.scale.set(120, 60, 1.0);
+                scene.add(ivLabel);
+                strikeLines.push(ivLabel);
+            }
+        }
+    });
+}
+
         // Create a background grid with labeled axes
         function createBackgroundGrid(minValue, maxValue) {
-            const gridSize = 150;
-            
-            // Create grid container
-            const container = new THREE.Object3D();
-            gridGroup.add(container);
+    const gridSize = 150;
+    
+    const container = new THREE.Object3D();
+    gridGroup.add(container);
             
             // Material with depthWrite = false to ensure grid is always visible
             const gridMaterial = new THREE.LineBasicMaterial({ 
-                color: 0x000000,
-                transparent: true,
-                opacity: 0.4,
-                depthWrite: false,
-                depthTest: true,
-                linewidth: 1.5
-            });
+    color: 0xcccccc,        // Changed from 0x000000 to light grey
+    transparent: true,
+    opacity: 0.1,           // Increased from 0.4 for better visibility
+    depthWrite: false,
+    depthTest: true,
+    linewidth: 1.5
+});
             
             // Denser grid
             const minorGridStep = 15; 
@@ -1517,7 +1579,7 @@
             
             // Axes with brighter color
             const axesMaterial = new THREE.LineBasicMaterial({ 
-                color: 0x4f8fff,
+                color: 0xcccccc,
                 linewidth: 2,
                 transparent: false,
                 opacity: 1.0
@@ -1559,18 +1621,18 @@
             const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             
             // Strike (X-axis) labels - inverted order and at foreground
-            const strikeValues = [6200, 6100, 6000, 5900, 5800];
-            const strikePositions = [-gridSize * 0.8, -gridSize * 0.4, 0, gridSize * 0.4, gridSize * 0.8];
-            
-            strikePositions.forEach((pos, index) => {
-                const label = createTextSprite(strikeValues[index].toString(), {
-                    fontsize: axisLabelFontSize,
-                    textColor: textColor
-                });
-                label.position.set(pos, -15, -gridSize - 15);
-                label.scale.copy(axisLabelScale);
-                container.add(label);
-            });
+            const strikeValues = [6400, 6200, 6000, 5800, 5600]; // CHANGED: new values
+    const strikePositions = [-gridSize * 0.8, -gridSize * 0.4, 0, gridSize * 0.4, gridSize * 0.8];
+    
+    strikePositions.forEach((pos, index) => {
+        const label = createTextSprite(strikeValues[index].toString(), {
+            fontsize: 30,
+            textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
+        });
+        label.position.set(pos, -15, -gridSize - 15);
+        label.scale.set(120, 60, 1.0);
+        container.add(label);
+    });
             
             // IV (Z-axis) labels
             const ivValues = [0.1, 0.3, 0.5, 0.7, 0.9];
