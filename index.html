@@ -11,6 +11,51 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     
     <style>
+       /* Complete MathJax scroll removal */
+
+/* Hide MathJax scroll arrows and controls */
+.mjx-container .mjx-mrow > .mjx-mo[data-semantic-type="relation"]:first-child,
+.mjx-container .mjx-mrow > .mjx-mo[data-semantic-type="relation"]:last-child {
+    display: none !important;
+}
+
+/* Hide all scrollbars on MathJax elements */
+.mjx-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.mjx-container {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE/Edge */
+    overflow: visible !important; /* Force visible overflow */
+}
+
+/* Hide any MathJax scroll controls and menus */
+.mjx-assistive-mml,
+.mjx-scroll,
+.MathJax_MenuArrow,
+.mjx-menu,
+.mjx-overflow,
+.mjx-tool-item {
+    display: none !important;
+}
+
+/* Prevent MathJax from creating scrollable containers */
+.mjx-container,
+.mjx-display,
+.mjx-math {
+    overflow: visible !important;
+    max-width: none !important;
+}
+
+/* Hide MathJax context menu and accessibility features that might show scrolls */
+.mjx-a11y,
+.mjx-menu-item,
+.mjx-menu-rule {
+    display: none !important;
+}
         /* Overall layout */
         * {
             box-sizing: border-box;
@@ -218,8 +263,8 @@
         }
 
         .formulas {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Increased from 300px */
             gap: 20px;
             margin-top: 15px;
         }
@@ -244,6 +289,8 @@
             color: #aabbcc;
             font-size: 14px;
             line-height: 1.6;
+            overflow-wrap: break-word; /* Break long formulas */
+            word-break: break-word; /* Additional word breaking */
         }
 
         .formula-notes {
@@ -353,6 +400,42 @@
                 right: 10px;
             }
         }
+                /* Make MathJax formulas responsive */
+        .formula .MathJax {
+            font-size: 110% !important; /* Reduced from 120% */
+            max-width: 100% !important;
+            overflow-x: auto !important; /* Add horizontal scroll if needed */
+            overflow-y: hidden !important;
+        }
+
+        /* Specific fixes for complex formulas */
+        .formula .MJX-TEX {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            font-size: 0.9em !important; /* Slightly smaller for complex formulas */
+        }
+
+        /* Special handling for wide formulas */
+        .formula.wide-formula {
+            grid-column: span 2; /* Span two columns if needed */
+            min-width: 500px;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .formulas {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
+            
+            .formula .MathJax {
+                font-size: 100% !important; /* Even smaller on mobile */
+            }
+            
+            .formula.wide-formula {
+                grid-column: span 1; /* Single column on mobile */
+                min-width: auto;
+            }
+        }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -373,6 +456,13 @@
                         <option value="gamma">Gamma (Γ)</option>
                         <option value="vanna">Vanna</option>
                         <option value="charm">Charm</option>
+                        <option value="vomma">Vomma</option>
+                        <option value="veta">Veta</option>
+                        <option value="speed">Speed</option>
+                        <option value="zomma">Zomma</option>
+                        <option value="color">Color</option>
+                        <option value="ultima">Ultima</option>
+                        <option value="parmicharma">Parmicharma</option>
                     </select>
                 </div>
                 
@@ -401,7 +491,7 @@
                     <ul>
                         <li>standard normal distribution</li>
                         <li>Spot (S): 6000</li>
-                        <li>Strike (K): 5600-6400 in steps of 5</li>
+                        <li>Strike (K): 5600-6400 </li>
                         <li>Interest Rate (r): 0.03</li>
                         <li>Dividend Yield (q): 0.00001</li>
                         <li>Time to Expiry (τ): Input/365 </li>
@@ -463,59 +553,110 @@
                 and the z-axis represents Implied Volatility. The lines along the curves highlight each strike
                 price across different IV levels. Hover over the surface to see exact values.
             </p>
-            <div class="guide-panel formula-section">
-                <h3>Option Greeks Formulas</h3>
-                <div class="formulas">
-                  <div class="formula">
-                    <h4>Delta (Δ)</h4>
-                    <p>Call: \(e^{-qT} N(d_1)\)</p>
-                    <p>Put: \(-e^{-qT} N(-d_1)\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Gamma (Γ)</h4>
-                    <p>Call/Put: \(\frac{e^{-qT} N'(d_1)}{S\sigma\sqrt{T}}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Vega (ν)</h4>
-                    <p>Call/Put: \(S e^{-qT} N'(d_1) \sqrt{T}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Vanna</h4>
-                    <p>Call/Put: \(-e^{-qT} N'(d_1) \frac{d_2}{\sigma}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Charm</h4>
-                    <p>Call: \(qe^{-qT}N(d_1) - e^{-qT}N'(d_1)\frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
-                    <p>Put: \(-qe^{-qT}N(-d_1) - e^{-qT}N'(d_1)\frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Theta (Θ)</h4>
-                    <p>Call: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2) + qSe^{-qT}N(d_1)\)</p>
-                    <p>Put: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2) - qSe^{-qT}N(-d_1)\)</p>
-                  </div>
-                  
-                  <div class="formula-notes">
-                    <p><strong>Where:</strong></p>
-                    <ul>
-                      <li>\(d_1 = \frac{\ln(S/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}\)</li>
-                      <li>\(d_2 = d_1 - \sigma\sqrt{T}\)</li>
-                      <li>\(N(x)\) is the standard normal CDF</li>
-                      <li>\(N'(x)\) is the standard normal PDF</li>
-                      <li>\(S\) is the spot price</li>
-                      <li>\(K\) is the strike price</li>
-                      <li>\(r\) is the risk-free rate</li>
-                      <li>\(q\) is the dividend yield</li>
-                      <li>\(\sigma\) is the volatility</li>
-                      <li>\(T\) is the time to expiry</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <!-- Replace the existing formula section in your HTML with this updated version -->
+
+<div class="guide-panel formula-section">
+    <h3>Option Greeks Formulas</h3>
+    <div class="formulas">
+      <!-- First Order Greeks -->
+      <div class="formula">
+        <h4>Delta (Δ)</h4>
+        <p>Call: \(e^{-qT} N(d_1)\)</p>
+        <p>Put: \(-e^{-qT} N(-d_1)\)</p>
+      </div>
+      
+      <div class="formula">
+        <h4>Gamma (Γ)</h4>
+        <p>\(\frac{e^{-qT} N'(d_1)}{S\sigma\sqrt{T}}\)</p>
+      </div>
+      
+      <div class="formula">
+        <h4>Vega (ν)</h4>
+        <p>\(S e^{-qT} N'(d_1) \sqrt{T}\)</p>
+      </div>
+      
+      <div class="formula">
+        <h4>Theta (Θ)</h4>
+        <p>Call: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2) + qSe^{-qT}N(d_1)\)</p>
+        <p>Put: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2) - qSe^{-qT}N(-d_1)\)</p>
+      </div>
+
+      <!-- Second Order Greeks -->
+      <div class="formula">
+        <h4>Vanna</h4>
+        <p>\(-e^{-qT} N'(d_1) \frac{d_2}{\sigma}\)</p>
+      </div>
+      
+      <div class="formula">
+        <h4>Charm</h4>
+        <p>Call: \(qe^{-qT}N(d_1) - e^{-qT}N'(d_1) \times \frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
+        <p>Put: \(-qe^{-qT}N(-d_1) - e^{-qT}N'(d_1) \times \frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
+      </div>
+
+      <div class="formula">
+        <h4>Vomma (Volga)</h4>
+        <p>\(\nu \frac{d_1 d_2}{\sigma}\)</p>
+      </div>
+
+      <div class="formula">
+        <h4>Veta</h4>
+        <p>\(-Se^{-qT}N'(d_1)\sqrt{T} \times \left[q + \frac{(r-q)d_1}{\sigma\sqrt{T}} - \frac{1+d_1d_2}{2T}\right]\)</p>
+      </div>
+
+      <!-- Third Order Greeks -->
+      <div class="formula">
+        <h4>Speed</h4>
+        <p>\(-e^{-qT}\frac{N'(d_1)}{S^2\sigma\sqrt{T}} \times \left(\frac{d_1}{\sigma\sqrt{T}} + 1\right)\)</p>
+      </div>
+
+      <div class="formula">
+        <h4>Zomma</h4>
+        <p>\(e^{-qT}\frac{N'(d_1)(d_1d_2-1)}{S\sigma^2\sqrt{T}}\)</p>
+      </div>
+
+      <div class="formula">
+        <h4>Color</h4>
+        <p>\(-e^{-qT}\frac{N'(d_1)}{2ST\sigma\sqrt{T}} \times \left[2qT + 1 + \frac{2(r-q)T - d_2\sigma\sqrt{T}}{\sigma\sqrt{T}}d_1\right]\)</p>
+      </div>
+
+      <div class="formula">
+        <h4>Ultima</h4>
+        <p>\(-\frac{\nu}{\sigma^2}[d_1d_2(1-d_1d_2) + d_1^2 + d_2^2]\)</p>
+      </div>
+
+      <!-- Parmicharma - Fixed to be in single formula box -->
+      <div class="formula">
+        <h4>Parmicharma</h4>
+        <p>\(\left(q - \frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\right) \times \text{charm} - e^{-qT}N'(d_1) \times \frac{2d_2\sigma^2T - (r-q)\sigma T\sqrt{T} - \sigma^3T^2\frac{\partial d_2}{\partial T}}{2T^3\sigma^2}\)</p>
+        <p>Where: \(\frac{\partial d_2}{\partial T} = \frac{(r-q+\sigma^2/2)}{\sigma\sqrt{T}} - \frac{d_1}{2T} - \frac{\sigma}{2\sqrt{T}}\)</p>
+      </div>
+
+      <!-- Reference section -->
+      <div class="formula-notes">
+        <p><strong>Where:</strong></p>
+        <div class="formula-variables">
+          <p>\(d_1 = \frac{\ln(S/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}\)</p>
+          <p>\(d_2 = d_1 - \sigma\sqrt{T}\)</p>
+          <p>\(N(x)\) is the standard normal CDF</p>
+          <p>\(N'(x)\) is the standard normal PDF</p>
+          <p>\(S\) is the spot price, \(K\) is the strike price</p>
+          <p>\(r\) is the risk-free rate, \(q\) is the dividend yield</p>
+          <p>\(\sigma\) is the volatility, \(T\) is the time to expiry</p>
+          <p>\(\nu\) is vega</p>
+        </div>
+      </div>
+
+      <!-- Classification section -->
+      <div class="formula-notes">
+        <p><strong>Greek Classifications:</strong></p>
+        <div class="greek-classifications">
+          <p><strong>First Order:</strong> Delta, Vega, Theta</p>
+          <p><strong>Second Order:</strong> Gamma, Vanna, Charm, Vomma, Veta</p>
+          <p><strong>Third Order:</strong> Speed, Zomma, Color, Ultima, Parmicharma</p>
+        </div>
+      </div>
+    </div>
+</div>
               <div class="footer">
                 <p>Created by <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank" rel="noopener noreferrer">Johannes Dassler</a></p>
               </div>
@@ -842,8 +983,22 @@
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) - 
               (r * K * Math.exp(-r * T) * normCDF(d2)) + 
               (q * S * Math.exp(-q * T) * normCDF(d1)))/251;
-            
-            return { price, delta, gamma, vega, vanna, charm, theta };
+            const vomma = vega * (d1 * d2) / sigma;
+            const veta = -S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T) * 
+                (q + ((r - q) * d1) / (sigma * Math.sqrt(T)) - (1 + d1 * d2) / (2 * T));
+            const speed = -Math.exp(-q * T) * normPDF(d1) / (S * S * sigma * Math.sqrt(T)) * 
+                (d1 / (sigma * Math.sqrt(T)) + 1);
+            const zomma = Math.exp(-q * T) * normPDF(d1) * (d1 * d2 - 1) / (S * sigma * sigma * Math.sqrt(T));
+            const color = -Math.exp(-q * T) * normPDF(d1) / (2 * S * T * sigma * Math.sqrt(T)) * 
+                (2 * q * T + 1 + (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (sigma * Math.sqrt(T)) * d1);
+            const ultima = -vega / (sigma * sigma) * (d1 * d2 * (1 - d1 * d2) + d1 * d1 + d2 * d2);
+            const dd1_dt = (r - q + sigma * sigma / 2) / (sigma * Math.sqrt(T)) - d1 / (2 * T);
+            const dd2_dt = dd1_dt - sigma / (2 * Math.sqrt(T));
+            const parmicharma = ((q - (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T))) * charm - 
+                Math.exp(-q * T) * normPDF(d1) * (2 * d2 * sigma * sigma * T - (r - q) * sigma * T * Math.sqrt(T) - 
+                sigma * sigma * sigma * T * T * dd2_dt) / (2 * T * T * T * sigma * sigma))/2008;
+
+            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, parmicharma };
         }
 
         // Calculate Put option price and Greeks
@@ -860,8 +1015,22 @@
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) + 
               (r * K * Math.exp(-r * T) * normCDF(-d2)) - 
               (q * S * Math.exp(-q * T) * normCDF(-d1)))/251;
-            
-            return { price, delta, gamma, vega, vanna, charm, theta };
+            const vomma = vega * (d1 * d2) / sigma;
+            const veta = -S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T) * 
+                (q + ((r - q) * d1) / (sigma * Math.sqrt(T)) - (1 + d1 * d2) / (2 * T));
+            const speed = -Math.exp(-q * T) * normPDF(d1) / (S * S * sigma * Math.sqrt(T)) * 
+                (d1 / (sigma * Math.sqrt(T)) + 1);
+            const zomma = Math.exp(-q * T) * normPDF(d1) * (d1 * d2 - 1) / (S * sigma * sigma * Math.sqrt(T));
+            const color = -Math.exp(-q * T) * normPDF(d1) / (2 * S * T * sigma * Math.sqrt(T)) * 
+                (2 * q * T + 1 + (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (sigma * Math.sqrt(T)) * d1);
+            const ultima = -vega / (sigma * sigma) * (d1 * d2 * (1 - d1 * d2) + d1 * d1 + d2 * d2);
+            const dd1_dt = (r - q + sigma * sigma / 2) / (sigma * Math.sqrt(T)) - d1 / (2 * T);
+            const dd2_dt = dd1_dt - sigma / (2 * Math.sqrt(T));
+            const parmicharma = ((q - (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T))) * charm - 
+                Math.exp(-q * T) * normPDF(d1) * (2 * d2 * sigma * sigma * T - (r - q) * sigma * T * Math.sqrt(T) - 
+                sigma * sigma * sigma * T * T * dd2_dt) / (2 * T * T * T * sigma * sigma))/2008;
+
+            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, parmicharma };
         }
 
         // Helper function to get the selected Greek value based on option type and position
@@ -933,12 +1102,19 @@
         // Map Greek names to display names
         function getGreekDisplayName(greek) {
             const greekMap = {
-                'delta': 'Delta (Δ)',
-                'gamma': 'Gamma (Γ)',
-                'vega': 'Vega (ν)',
-                'vanna': 'Vanna',
-                'charm': 'Charm',
-                'theta': 'Theta (Θ)'
+                    'delta': 'Delta (Δ)',
+                    'gamma': 'Gamma (Γ)',
+                    'vega': 'Vega (ν)',
+                    'vanna': 'Vanna',
+                    'charm': 'Charm',
+                    'theta': 'Theta (Θ)',
+                    'vomma': 'Vomma',
+                    'veta': 'Veta',
+                    'speed': 'Speed',
+                    'zomma': 'Zomma',
+                    'color': 'Color',
+                    'ultima': 'Ultima',
+                    'parmicharma': 'Parmicharma'
             };
             return greekMap[greek] || greek;
         }
@@ -1169,9 +1345,9 @@ function getColorForIV(iv) {
         const clampedIV = Math.max(0.10, Math.min(0.90, iv));
         
         // Get the actual Greek value from the intersection point's Y coordinate
-        const scaleY = gridSize / ((maxValueGlobal - minValueGlobal) || 1);
-        const offsetY = -(minValueGlobal + maxValueGlobal) / 2;
-        const actualValue = (point.y / scaleY) - offsetY;
+        const maxAbsValueGlobal = Math.max(Math.abs(minValueGlobal), Math.abs(maxValueGlobal));
+const scaleYGlobal = gridSize / (maxAbsValueGlobal || 1);
+const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-centered
         
         strikeValueElement.textContent = clampedStrike;
         ivValueElement.textContent = clampedIV.toFixed(2);
@@ -1194,7 +1370,25 @@ function getColorForIV(iv) {
             
             if (renderer && scene && camera) renderer.render(scene, camera);
         }
-
+        function getSmartScaling(minValue, maxValue) {
+    // Check if values are predominantly on one side of zero
+    const valueRange = maxValue - minValue;
+    const zeroOffset = Math.abs(minValue) / valueRange; // How far zero is from min (0-1)
+    
+    // If zero is very close to one edge (within 10%), use asymmetric scaling
+    if (zeroOffset < 0.1 || zeroOffset > 0.9) {
+        // Asymmetric scaling - center around actual midpoint
+        const offsetY = -(minValue + maxValue) / 2;
+        const scaleY = 150 / (valueRange / 2 || 1);
+        return { offsetY, scaleY, symmetric: false };
+    } else {
+        // Symmetric scaling around zero
+        const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
+        const offsetY = 0;
+        const scaleY = 150 / (maxAbsValue || 1);
+        return { offsetY, scaleY, symmetric: true };
+    }
+}
         // Update the 3D plot
         function updatePlot(initialLoad = false) {
             try {
@@ -1275,12 +1469,14 @@ function getColorForIV(iv) {
                 
                 // Use negative scaleX to invert the X-axis
                 const scaleX = -gridSize / (strikeRange/2);
-                const scaleY = gridSize / (valueRange/2);
+                const scaling = getSmartScaling(minValue, maxValue);
+                const scaleY = scaling.scaleY;
+
                 const scaleZ = gridSize / (ivRange/2);
                 
                 // Offset to center the plot
                 const offsetX = -6000;
-                const offsetY = -(minValue + maxValue) / 2;
+                const offsetY = scaling.offsetY;
                 const offsetZ = -0.5;
                 
                 loadingElement.innerHTML = `
@@ -1409,11 +1605,12 @@ function getColorForIV(iv) {
     const valueRange = maxValue - minValue || 1;
     
     const scaleX = -gridSize / (strikeRange/2);
-    const scaleY = gridSize / (valueRange/2);
+    const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
+    const scaleY = gridSize / (maxAbsValue || 1);
     const scaleZ = gridSize / (ivRange/2);
     
     const offsetX = -6000;
-    const offsetY = -(minValue + maxValue) / 2;
+    const offsetY = 0;
     const offsetZ = -0.5;
     
     // Create a simple plane geometry for interaction
@@ -1449,11 +1646,12 @@ function getColorForIV(iv) {
     const valueRange = maxValue - minValue || 1;
     
     const scaleX = -gridSize / (strikeRange/2);
-    const scaleY = gridSize / (valueRange/2);
+    const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
+    const scaleY = gridSize / (maxAbsValue || 1);
     const scaleZ = gridSize / (ivRange/2);
     
     const offsetX = -6000;
-    const offsetY = -(minValue + maxValue) / 2;
+    const offsetY = 0;
     const offsetZ = -0.5;
     
     keyIVs.forEach(iv => {
@@ -1464,7 +1662,7 @@ function getColorForIV(iv) {
             const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
             
             const x = (strike + offsetX) * scaleX;
-            const y = (greekValue + offsetY) * scaleY;
+            const y = greekValue * scaleY;
             const z = (iv + offsetZ) * scaleZ;
             
             linePoints.push(new THREE.Vector3(x, y, z));
@@ -1649,19 +1847,26 @@ line.userData = { iv: iv };
             });
             
             // Greek value (Y-axis) labels - at foreground (minimum Z)
-            const valueStep = (maxValue - minValue) / 4;
-            for (let i = 0; i <= 4; i++) {
-                const value = minValue + i * valueStep;
-                const position = -gridSize + i * gridSize / 2;
-                
-                const label = createTextSprite(value.toFixed(3), {
-                    fontsize: axisLabelFontSize,
-                    textColor: textColor
-                });
-                label.position.set(-gridSize - 25, position, -gridSize - 15);
-                label.scale.copy(axisLabelScale);
-                container.add(label);
-            }
+            // Greek value (Y-axis) labels - symmetric around zero
+const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
+const labelValues = [
+    -maxAbsValue,
+    -maxAbsValue/2,
+    0,
+    maxAbsValue/2,
+    maxAbsValue
+];
+
+labelValues.forEach((value) => {
+    const position = (value / (maxAbsValue || 1)) * gridSize;
+    const label = createTextSprite(value.toFixed(3), {
+        fontsize: 30,
+        textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
+    });
+    label.position.set(-gridSize - 25, position, -gridSize - 15);
+    label.scale.set(120, 60, 1.0);
+    container.add(label);
+});
         }
 
         // Add title and main axis labels
