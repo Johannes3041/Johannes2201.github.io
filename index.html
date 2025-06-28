@@ -11,6 +11,153 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     
     <style>
+        /* SPX/VIX Banner Styles */
+        /* Add this to your existing banner styles */
+.banner-title {
+    flex: 1;
+    text-align: left;
+}
+
+.banner-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Update banner-content to better accommodate the title */
+.banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px; /* Increased gap for better spacing */
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .banner-title h2 {
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    .banner-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .banner-title {
+        text-align: center;
+        width: 100%;
+    }
+}
+.spx-vix-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, #1a2235 0%, #2a3c54 100%);
+    border-bottom: 2px solid #4f8fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.banner-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #aabbcc;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.metric-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.driver-display {
+    max-width: 300px;
+    font-size: 13px;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center;
+    border-left: 3px solid #4f8fff;
+}
+
+.refresh-button {
+    background: linear-gradient(135deg, #4f8fff 0%, #7fafff 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.refresh-button:hover {
+    background: linear-gradient(135deg, #7fafff 0%, #4f8fff 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 143, 255, 0.3);
+}
+
+.loading-spinner-banner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #aabbcc;
+    border-top: 2px solid #4f8fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #aabbcc;
+}
+
+/* Adjust body for banner */
+body {
+    padding-top: 70px; /* Add space for fixed banner */
+}
        /* Complete MathJax scroll removal */
 
 /* Hide MathJax scroll arrows and controls */
@@ -441,6 +588,40 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
+    <!-- SPX/VIX Banner -->
+<div class="spx-vix-banner">
+    <div class="banner-content">
+        <div class="banner-title">
+            <h2>Daily SPOT VOL Relationship</h2>
+        </div>
+        <div class="banner-section">
+            <div class="metric-item">
+                <div class="metric-label">SPX Change</div>
+                <div class="metric-value" id="spx-change">-</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">VIX Change</div>
+                <div class="metric-value" id="vix-change">-</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">Residual</div>
+                <div class="metric-value" id="residual-value">-</div>
+            </div>
+        </div>
+        
+        <div class="driver-display" id="driver-display">
+            Loading market data...
+        </div>
+        
+        <div class="banner-section">
+            <div class="status-indicator" id="status-indicator">
+                <div class="loading-spinner-banner"></div>
+                Updating...
+            </div>
+            <button class="refresh-button" onclick="updateBannerData()">Refresh</button>
+        </div>
+    </div>
+</div>
     <div class="container">
         <h1>Black-Scholes Greeks 3D Visualization</h1>
         
@@ -669,6 +850,173 @@
     </div>
     
     <script>
+        // JavaScript version of your Python function
+// 1. Fetch Funktion für Yahoo Finance
+async function fetchYahooFinanceData(symbol) {
+    try {
+        // CORS Proxy verwenden
+        const proxyUrl = 'https://api.allorigins.win/get?url=';
+        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+        const fullUrl = proxyUrl + encodeURIComponent(yahooUrl);
+        
+        console.log(`Fetching ${symbol} via proxy...`);
+        
+        const response = await fetch(fullUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const proxyData = await response.json();
+        const data = JSON.parse(proxyData.contents);
+        
+        const result = data.chart.result[0];
+        const meta = result.meta;
+        
+        console.log(`${symbol} data:`, meta);
+        
+        return {
+            regularMarketPrice: meta.regularMarketPrice,
+            regularMarketOpen: meta.regularMarketOpen || meta.previousClose,
+            symbol: symbol
+        };
+    } catch (error) {
+        console.error(`Error fetching ${symbol}:`, error);
+        
+        // Fallback zu alternativer API wenn Proxy fehlschlägt
+        try {
+            return await fetchAlternativeData(symbol);
+        } catch (fallbackError) {
+            console.error(`Fallback also failed for ${symbol}:`, fallbackError);
+            return null;
+        }
+    }
+}
+
+// Alternative Fallback-Funktion
+async function fetchAlternativeData(symbol) {
+    // Finnhub als Backup (kostenlos)
+    const finnhubToken = 'sandbox_c9k8qeaad3ieqa8bccrg';
+    let finnhubSymbol = symbol;
+    
+    // Symbol mapping für Finnhub
+    if (symbol === '^GSPC') finnhubSymbol = 'SPX';
+    if (symbol === '^VIX') finnhubSymbol = 'VIX';
+    
+    const url = `https://finnhub.io/api/v1/quote?symbol=${finnhubSymbol}&token=${finnhubToken}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.c && data.o) {
+        return {
+            regularMarketPrice: data.c, // current price
+            regularMarketOpen: data.o,  // open price
+            symbol: symbol
+        };
+    } else {
+        throw new Error('No data from alternative API');
+    }
+}
+
+// 2. Deine Residual Berechnung (die du schon hast)
+async function calculateResidualWithDrivers() {
+    try {
+        console.log('Fetching SPX and VIX data...');
+        
+        const [spxData, vixData] = await Promise.all([
+            fetchYahooFinanceData('^GSPC'),
+            fetchYahooFinanceData('^VIX')
+        ]);
+        
+        if (!spxData || !vixData) {
+            throw new Error('Failed to fetch market data');
+        }
+        
+        console.log('SPX:', spxData);
+        console.log('VIX:', vixData);
+        
+        const spxChange = spxData.regularMarketPrice / spxData.regularMarketOpen - 1;
+        const vixChange = vixData.regularMarketPrice / vixData.regularMarketOpen - 1;
+        const predictedVixChange = 0.008343 + spxChange * -6.411903;
+        const residual = vixChange - predictedVixChange;
+        
+        let driver;
+        if (Math.abs(spxChange) < 0.001) {
+            driver = `VIX_INDEPENDENT (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+        } else if (Math.abs(vixChange) < 0.005) {
+            driver = `VIX_UNRESPONSIVE (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+        } else if ((spxChange > 0 && vixChange > 0) || (spxChange < 0 && vixChange < 0)) {
+            driver = `WRONG_DIRECTION (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+        } else if (Math.abs(residual) > 0.02) {
+            if (Math.abs(vixChange) > Math.abs(predictedVixChange) * 1.5) {
+                driver = `VIX_OVERREACTION (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+            } else {
+                driver = `VIX_UNDERREACTION (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+            }
+        } else {
+            driver = `NORMAL (SPX: ${spxChange.toFixed(4)}, VIX: ${vixChange.toFixed(4)})`;
+        }
+        
+        return {
+            spx_change: spxChange,
+            vix_change: vixChange,
+            predicted_vix_change: predictedVixChange,
+            residual: residual,
+            driver: driver,
+            spx_price: spxData.regularMarketPrice,
+            vix_price: vixData.regularMarketPrice
+        };
+    } catch (error) {
+        console.error('Error calculating residual:', error);
+        return null;
+    }
+}
+
+// 3. Die fehlende updateBannerData Funktion
+async function updateBannerData() {
+    const statusIndicator = document.getElementById('status-indicator');
+    const spxChangeEl = document.getElementById('spx-change');
+    const vixChangeEl = document.getElementById('vix-change');
+    const residualEl = document.getElementById('residual-value');
+    const driverEl = document.getElementById('driver-display');
+    
+    // Show loading state
+    statusIndicator.innerHTML = '<div class="loading-spinner-banner"></div>Updating...';
+    
+    const result = await calculateResidualWithDrivers();
+    
+    if (result) {
+        // Update values
+        spxChangeEl.textContent = `${(result.spx_change * 100).toFixed(2)}%`;
+        vixChangeEl.textContent = `${(result.vix_change * 100).toFixed(2)}%`;
+        residualEl.textContent = result.residual.toFixed(4);
+        driverEl.textContent = result.driver;
+        
+        // Color coding for residual
+        if (Math.abs(result.residual) > 0.02) {
+            residualEl.style.color = '#ff6b6b';
+        } else if (Math.abs(result.residual) > 0.01) {
+            residualEl.style.color = '#ffd93d';
+        } else {
+            residualEl.style.color = '#6bcf7f';
+        }
+        
+        statusIndicator.innerHTML = `Last updated: ${new Date().toLocaleTimeString()}`;
+    } else {
+        statusIndicator.innerHTML = 'Update failed';
+        driverEl.textContent = 'Error loading data';
+    }
+}
+
+// 4. Auto-initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateBannerData();
+    
+    // Auto-refresh every 30 seconds
+    setInterval(updateBannerData, 30000);
+});
+
         // Constants for the Black-Scholes model
         const DEFAULT_SPOT = 6000;
         const DEFAULT_RATE = 0.03;
