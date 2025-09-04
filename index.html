@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Black-Scholes Greeks 3D Visualization</title>
-
+    
     <!-- Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <!-- OrbitControls for camera manipulation -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
-
+    
     <style>
        /* Complete MathJax scroll removal */
 
@@ -263,8 +263,6 @@
         }
 
         .formulas {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Increased from 300px */
             gap: 20px;
@@ -392,7 +390,7 @@
             .main-content {
                 flex-direction: column;
             }
-
+            
             .controls-panel {
                 width: 100%;
             }
@@ -445,7 +443,7 @@
 <body>
     <div class="container">
         <h1>Black-Scholes Greeks 3D Visualization</h1>
-
+        
         <div class="main-content">
             <!-- Controls -->
             <div class="controls-panel">
@@ -467,7 +465,7 @@
                         <option value="parmicharma">Parmicharma</option>
                     </select>
                 </div>
-
+                
                 <div class="control-group">
                     <label for="optionTypeSelect">Option Type</label>
                     <select id="optionTypeSelect" class="control-input">
@@ -475,7 +473,7 @@
                         <option value="put">Put</option>
                     </select>
                 </div>
-
+                
                 <div class="control-group">
                     <label for="positionTypeSelect">Position</label>
                     <select id="positionTypeSelect" class="control-input">
@@ -487,13 +485,12 @@
                         <input type="number" id="daysToExpiryInput" class="control-input" value="1" min="0.000001" max="10000" step="1">
                     </div>
                 </div>
-
+                
                 <div class="info-panel">
                     <h3>Parameters</h3>
                     <ul>
                         <li>standard normal distribution</li>
                         <li>Spot (S): 6000</li>
-                        <li>Strike (K): 5600-6400 in steps of 5</li>
                         <li>Strike (K): 5600-6400 </li>
                         <li>Interest Rate (r): 0.03</li>
                         <li>Dividend Yield (q): 0.00001</li>
@@ -503,7 +500,7 @@
                         <li>Theta and charm are multiplied by 1/251</li>
                     </ul>
                 </div>
-
+                
                 <div class="info-panel">
                     <h3>Navigation</h3>
                     <ul>
@@ -513,7 +510,7 @@
                     </ul>
                 </div>
             </div>
-
+            
             <!-- 3D Plot -->
             <div class="visualization-container">
                 <div id="loading">
@@ -547,7 +544,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="guide-panel">
             <h3>Visualization Guide</h3>
             <p>
@@ -556,59 +553,6 @@
                 and the z-axis represents Implied Volatility. The lines along the curves highlight each strike
                 price across different IV levels. Hover over the surface to see exact values.
             </p>
-            <div class="guide-panel formula-section">
-                <h3>Option Greeks Formulas</h3>
-                <div class="formulas">
-                  <div class="formula">
-                    <h4>Delta (Δ)</h4>
-                    <p>Call: \(e^{-qT} N(d_1)\)</p>
-                    <p>Put: \(-e^{-qT} N(-d_1)\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Gamma (Γ)</h4>
-                    <p>Call/Put: \(\frac{e^{-qT} N'(d_1)}{S\sigma\sqrt{T}}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Vega (ν)</h4>
-                    <p>Call/Put: \(S e^{-qT} N'(d_1) \sqrt{T}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Vanna</h4>
-                    <p>Call/Put: \(-e^{-qT} N'(d_1) \frac{d_2}{\sigma}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Charm</h4>
-                    <p>Call: \(qe^{-qT}N(d_1) - e^{-qT}N'(d_1)\frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
-                    <p>Put: \(-qe^{-qT}N(-d_1) - e^{-qT}N'(d_1)\frac{2(r-q)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}}\)</p>
-                  </div>
-                  
-                  <div class="formula">
-                    <h4>Theta (Θ)</h4>
-                    <p>Call: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2) + qSe^{-qT}N(d_1)\)</p>
-                    <p>Put: \(-\frac{S e^{-qT} N'(d_1) \sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2) - qSe^{-qT}N(-d_1)\)</p>
-                  </div>
-                  
-                  <div class="formula-notes">
-                    <p><strong>Where:</strong></p>
-                    <ul>
-                      <li>\(d_1 = \frac{\ln(S/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}\)</li>
-                      <li>\(d_2 = d_1 - \sigma\sqrt{T}\)</li>
-                      <li>\(N(x)\) is the standard normal CDF</li>
-                      <li>\(N'(x)\) is the standard normal PDF</li>
-                      <li>\(S\) is the spot price</li>
-                      <li>\(K\) is the strike price</li>
-                      <li>\(r\) is the risk-free rate</li>
-                      <li>\(q\) is the dividend yield</li>
-                      <li>\(\sigma\) is the volatility</li>
-                      <li>\(T\) is the time to expiry</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
             <!-- Replace the existing formula section in your HTML with this updated version -->
 
 <div class="guide-panel formula-section">
@@ -723,13 +667,13 @@
             </svg>
         </a>
     </div>
-
+    
     <script>
         // Constants for the Black-Scholes model
         const DEFAULT_SPOT = 6000;
         const DEFAULT_RATE = 0.03;
         const DEFAULT_DIVIDEND = 0.00001;
-
+        
         // DOM elements
         const daysToExpiryInput = document.getElementById('daysToExpiryInput');
         const greekSelect = document.getElementById('greekSelect');
@@ -777,7 +721,7 @@
             console.error(message);
             loadingElement.style.display = 'none';
             fallbackContainer.style.display = 'block';
-
+            
             show2DButton.addEventListener('click', function() {
                 use2DMode = true;
                 fallbackContainer.style.display = 'none';
@@ -794,21 +738,21 @@
             plotContainer.style.justifyContent = 'center';
             plotContainer.style.padding = '20px';
             valueDisplay.style.display = 'none';
-
+            
             const title = document.createElement('h3');
             title.textContent = `${getGreekDisplayName(greekSelect.value)} for ${positionTypeSelect.value} ${optionTypeSelect.value} options`;
             title.style.color = '#ffffff';
             plotContainer.appendChild(title);
-
+            
             // Create line chart using canvas
             const canvas = document.createElement('canvas');
             canvas.width = plotContainer.clientWidth - 40;
             canvas.height = 400;
             plotContainer.appendChild(canvas);
-
+            
             const ctx = canvas.getContext('2d');
             draw2DChart(ctx, canvas.width, canvas.height);
-
+            
             // Add legend
             const legend = document.createElement('div');
             legend.style.display = 'flex';
@@ -816,29 +760,29 @@
             legend.style.marginTop = '20px';
             legend.style.justifyContent = 'center';
             legend.style.color = '#ffffff';
-
+            
             [5800, 5900, 6000, 6100, 6200].forEach(strike => {
                 const item = document.createElement('div');
                 item.style.display = 'flex';
                 item.style.alignItems = 'center';
                 item.style.margin = '0 10px 10px 0';
-
+                
                 const color = document.createElement('div');
                 color.style.width = '20px';
                 color.style.height = '3px';
                 color.style.backgroundColor = getColorForStrike(strike);
                 color.style.marginRight = '5px';
-
+                
                 const label = document.createElement('span');
                 label.textContent = `Strike ${strike}`;
-
+                
                 item.appendChild(color);
                 item.appendChild(label);
                 legend.appendChild(item);
             });
-
+            
             plotContainer.appendChild(legend);
-
+            
             // Add event listener for controls
             greekSelect.addEventListener('change', () => init2DMode());
             optionTypeSelect.addEventListener('change', () => init2DMode());
@@ -850,26 +794,26 @@
             const padding = 40;
             const chartWidth = width - 2 * padding;
             const chartHeight = height - 2 * padding;
-
+            
             // Fill dark background
             ctx.fillStyle = '#111624';
             ctx.fillRect(0, 0, width, height);
-
+            
             // Generate data (simplified for 2D)
             const strikes = [];
             for (let strike = 5800; strike <= 6200; strike += 25) {
                 strikes.push(strike);
             }
-
+            
             const ivValues = [];
             for (let iv = 0.1; iv <= 0.9; iv += 0.05) {
                 ivValues.push(iv);
             }
-
+            
             // Find min/max values for scaling
             let minValue = Infinity;
             let maxValue = -Infinity;
-
+            
             strikes.forEach(strike => {
                 ivValues.forEach(iv => {
                     const value = getGreekValue(DEFAULT_SPOT, strike, iv);
@@ -879,16 +823,16 @@
                     maxValue = Math.max(maxValue, value);
                 });
             });
-
+            
             // Add some padding to min/max
             const valuePadding = (maxValue - minValue) * 0.1;
             minValue -= valuePadding;
             maxValue += valuePadding;
-
+            
             // Draw grid
             ctx.strokeStyle = '#2a3c54';
             ctx.lineWidth = 0.5;
-
+            
             // Horizontal grid lines
             for (let i = 0; i <= 5; i++) {
                 const y = height - padding - (i / 5) * chartHeight;
@@ -897,7 +841,7 @@
                 ctx.lineTo(width - padding, y);
                 ctx.stroke();
             }
-
+            
             // Vertical grid lines
             for (let i = 0; i <= ivValues.length; i += 2) {
                 const x = padding + (i / ivValues.length) * chartWidth;
@@ -906,70 +850,70 @@
                 ctx.lineTo(x, height - padding);
                 ctx.stroke();
             }
-
+            
             // Draw axes
             ctx.strokeStyle = '#4f8fff';
             ctx.lineWidth = 1;
             ctx.beginPath();
-
+            
             // X-axis (IV)
             ctx.moveTo(padding, height - padding);
             ctx.lineTo(width - padding, height - padding);
-
+            
             // Y-axis (Greek value)
             ctx.moveTo(padding, height - padding);
             ctx.lineTo(padding, padding);
-
+            
             ctx.stroke();
-
+            
             // Draw X-axis labels
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             ctx.fillStyle = '#ffffff';
             ctx.font = '12px Arial';
-
+            
             ivValues.forEach((iv, index) => {
                 if (index % 2 === 0) { // Show every other label to avoid crowding
                     const x = padding + (index / (ivValues.length - 1)) * chartWidth;
                     ctx.fillText(iv.toFixed(2), x, height - padding + 5);
                 }
             });
-
+            
             // Draw Y-axis labels
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-
+            
             for (let i = 0; i <= 5; i++) {
                 const value = minValue + (i / 5) * (maxValue - minValue);
                 const y = height - padding - (i / 5) * chartHeight;
                 ctx.fillText(value.toFixed(4), padding - 5, y);
             }
-
+            
             // Draw axis titles
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
             ctx.fillStyle = '#ffffff';
             ctx.fillText('Implied Volatility (IV)', width / 2, height - 5);
-
+            
             ctx.save();
             ctx.translate(15, height / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.textBaseline = 'top';
             ctx.fillText(getGreekDisplayName(greekSelect.value), 0, 0);
             ctx.restore();
-
+            
             // Draw lines for each strike price
             strikes.forEach(strike => {
                 const points = [];
-
+                
                 ivValues.forEach(iv => {
                     const value = getGreekValue(DEFAULT_SPOT, strike, iv);
                     const x = padding + ((iv - 0.1) / 0.8) * chartWidth;
                     const y = height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
                     points.push({x, y});
                 });
-
+                
                 // Draw line with green coloring similar to reference
                 const strikePct = (strike - 5800) / 400; // Normalized 0-1
                 const green = 128 + Math.round(strikePct * 127);
@@ -977,11 +921,11 @@
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
-
+                
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
-
+                
                 ctx.stroke();
             });
         }
@@ -995,15 +939,15 @@
             const a4 = -1.453152027;
             const a5 = 1.061405429;
             const p = 0.3275911;
-
+            
             // Save the sign
             const sign = x < 0 ? -1 : 1;
             x = Math.abs(x);
-
+            
             // Approximation formula
             const t = 1.0 / (1.0 + p * x);
             const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-
+            
             return sign * y;
         }
 
@@ -1027,7 +971,7 @@
         // Calculate Call option price and Greeks
         function calculateCallOption(S, K, r, q, sigma, T) {
             const { d1, d2 } = calculateDs(S, K, r, q, sigma, T);
-
+            
             // Using the formulas provided in the original request
             const price = S * Math.exp(-q * T) * normCDF(d1) - K * Math.exp(-r * T) * normCDF(d2);
             const delta = Math.exp(-q * T) * normCDF(d1);
@@ -1039,8 +983,6 @@
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) - 
               (r * K * Math.exp(-r * T) * normCDF(d2)) + 
               (q * S * Math.exp(-q * T) * normCDF(d1)))/251;
-            
-            return { price, delta, gamma, vega, vanna, charm, theta };
             const vomma = vega * (d1 * d2) / sigma;
             const veta = -S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T) * 
                 (q + ((r - q) * d1) / (sigma * Math.sqrt(T)) - (1 + d1 * d2) / (2 * T));
@@ -1062,7 +1004,7 @@
         // Calculate Put option price and Greeks
         function calculatePutOption(S, K, r, q, sigma, T) {
             const { d1, d2 } = calculateDs(S, K, r, q, sigma, T);
-
+            
             const price = K * Math.exp(-r * T) * normCDF(-d2) - S * Math.exp(-q * T) * normCDF(-d1);
             const delta = -Math.exp(-q * T) * normCDF(-d1);
             const gamma = Math.exp(-q * T) * normPDF(d1) / (S * sigma * Math.sqrt(T));
@@ -1073,8 +1015,6 @@
             const theta = -(((S * Math.exp(-q * T) * normPDF(d1) * sigma) / (2 * Math.sqrt(T))) + 
               (r * K * Math.exp(-r * T) * normCDF(-d2)) - 
               (q * S * Math.exp(-q * T) * normCDF(-d1)))/251;
-            
-            return { price, delta, gamma, vega, vanna, charm, theta };
             const vomma = vega * (d1 * d2) / sigma;
             const veta = -S * Math.exp(-q * T) * normPDF(d1) * Math.sqrt(T) * 
                 (q + ((r - q) * d1) / (sigma * Math.sqrt(T)) - (1 + d1 * d2) / (2 * T));
@@ -1098,22 +1038,22 @@
             const greek = greekSelect.value;
             const optionType = optionTypeSelect.value;
             const positionType = positionTypeSelect.value;
-
+            
             // Use the days to expiry input to calculate T
             const daysToExpiry = parseFloat(daysToExpiryInput.value) || 1; // Default to 1 if invalid
             const T = daysToExpiry / 365; // Trading days in a year
-
+            
             const calculation = optionType === 'call' 
                 ? calculateCallOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T)
                 : calculatePutOption(S, K, DEFAULT_RATE, DEFAULT_DIVIDEND, iv, T);
-
+            
             let value = calculation[greek];
-
+            
             // Adjust for short positions (negative value)
             if (positionType === 'short') {
                 value = -value;
             }
-
+            
             return value;
         }
 
@@ -1121,14 +1061,14 @@
         function generateReducedData(initialLoad) {
     const strikeStep = initialLoad ? 10 : 1;
     const ivStep = initialLoad ? 0.05 : 0.02;
-
+    
     const data = [];
     strikeData = {};
-
+    
     // CHANGED: Strike prices from 5600 to 6400 instead of 5800 to 6200
     for (let strike = 5600; strike <= 6400; strike += strikeStep) {
         const strikeDataPoints = [];
-
+        
         for (let iv = 0.10; iv <= 0.90; iv += ivStep) {
             const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
             strikeDataPoints.push({
@@ -1137,11 +1077,11 @@
                 value: greekValue
             });
         }
-
+        
         data.push(strikeDataPoints);
         strikeData[strike] = strikeDataPoints;
     }
-
+    
     return data;
 }
 
@@ -1149,12 +1089,12 @@
         function getColorForValue(value, min, max) {
             // Normalize value to 0-1 range
             const normalized = (value - min) / (max - min);
-
+            
             // Red to green gradient
             let r = 1 - normalized;
             let g = normalized;
             let b = 0.1;
-
+            
             // Convert to RGB color
             return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
         }
@@ -1162,12 +1102,6 @@
         // Map Greek names to display names
         function getGreekDisplayName(greek) {
             const greekMap = {
-                'delta': 'Delta (Δ)',
-                'gamma': 'Gamma (Γ)',
-                'vega': 'Vega (ν)',
-                'vanna': 'Vanna',
-                'charm': 'Charm',
-                'theta': 'Theta (Θ)'
                     'delta': 'Delta (Δ)',
                     'gamma': 'Gamma (Γ)',
                     'vega': 'Vega (ν)',
@@ -1188,39 +1122,39 @@
         // Create text sprite without background, with larger text
         function createTextSprite(text, parameters) {
             if (parameters === undefined) parameters = {};
-
+            
             const fontface = parameters.fontface || 'Arial';
             const fontsize = parameters.fontsize ? parameters.fontsize * 1.5 : 36; 
             const textColor = parameters.textColor || { r:1.0, g:1.0, b:1.0, a:1.0 };
-
+            
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-
+            
             canvas.width = 768;
             canvas.height = 384;
-
+            
             context.clearRect(0, 0, canvas.width, canvas.height);
-
+            
             context.font = "Bold " + fontsize + "px " + fontface;
-
+            
             context.fillStyle = "rgba(" + textColor.r * 255 + "," + textColor.g * 255 + ","
                                         + textColor.b * 255 + "," + textColor.a + ")";
             context.textAlign = "center";
             context.textBaseline = "middle";
             context.fillText(text, canvas.width/2, canvas.height/2);
-
+            
             const texture = new THREE.CanvasTexture(canvas);
             texture.needsUpdate = true;
-
+            
             const spriteMaterial = new THREE.SpriteMaterial({ 
                 map: texture,
                 transparent: true 
             });
             const sprite = new THREE.Sprite(spriteMaterial);
-
+            
             const textWidth = context.measureText(text).width;
             sprite.scale.set(textWidth/6 + 50, 50, 1.0);
-
+            
             return sprite;
         }
 
@@ -1230,16 +1164,16 @@
             scene.children.forEach(child => {
                 if (child.isLight) scene.remove(child);
             });
-
+            
             // Add ambient light for dark background
             const ambientLight = new THREE.AmbientLight(0xcccccc, 0.7);
             scene.add(ambientLight);
-
+            
             // Add directional light with slight blue tint
             const directionalLight = new THREE.DirectionalLight(0xb4c2ff, 1.2);
             directionalLight.position.set(1, 1, 1);
             scene.add(directionalLight);
-
+            
             // Add secondary light source for better highlights
             const secondaryLight = new THREE.DirectionalLight(0xaaffcc, 0.5);
             secondaryLight.position.set(-1, 0.5, -1);
@@ -1251,9 +1185,9 @@
     const minStrike = 5600; // CHANGED: from 5800
     const maxStrike = 6400; // CHANGED: from 6200
     const t = (strike - minStrike) / (maxStrike - minStrike);
-
+    
     let r, g, b;
-
+    
     if (t < 0.5) {
         const localT = t * 2;
         r = 0.1 + localT * 0.9;
@@ -1265,17 +1199,17 @@
         g = 1.0 - localT * 0.9;
         b = 1.0 - localT * 0.9;
     }
-
+    
     return new THREE.Color(r, g, b);
 }
 function getColorForIV(iv) {
     const minIV = 0.10;
     const maxIV = 0.90;
     const t = (iv - minIV) / (maxIV - minIV);
-
+    
     // Blue to white to red gradient based on IV
     let r, g, b;
-
+    
     if (t < 0.5) {
         // Deep blue to white (low IV to medium IV)
         const localT = t * 2;
@@ -1289,7 +1223,7 @@ function getColorForIV(iv) {
         g = 1.0 - localT * 0.9;  // 1.0 to 0.1
         b = 1.0 - localT * 0.9;  // 1.0 to 0.1
     }
-
+    
     return new THREE.Color(r, g, b);
 }
 
@@ -1297,17 +1231,17 @@ function getColorForIV(iv) {
         function init() {
             try {
                 initializationAttempted = true;
-
+                
                 // Create scene
                 scene = new THREE.Scene();
                 scene.background = new THREE.Color(0x000000);
-
+                
                 // Create camera
                 const aspect = plotContainer.clientWidth / plotContainer.clientHeight;
                 camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 2000);
                 camera.position.set(0, 0, -600);
                 camera.lookAt(0, 0, 0);
-
+                
                 // Create renderer with higher quality
                 renderer = new THREE.WebGLRenderer({ 
                     antialias: true,
@@ -1316,10 +1250,10 @@ function getColorForIV(iv) {
                 });
                 renderer.setSize(plotContainer.clientWidth, plotContainer.clientHeight);
                 plotContainer.appendChild(renderer.domElement);
-
+                
                 // Set up enhanced lighting for dark theme
                 setupLighting();
-
+                
                 // Add orbit controls
                 if (typeof THREE.OrbitControls !== 'undefined') {
                     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -1329,29 +1263,29 @@ function getColorForIV(iv) {
                 } else {
                     throw new Error("OrbitControls not loaded");
                 }
-
+                
                 // Create grid group
                 gridGroup = new THREE.Group();
                 scene.add(gridGroup);
-
+                
                 // Initialize raycaster for interaction
                 raycaster = new THREE.Raycaster();
                 mouse = new THREE.Vector2();
-
+                
                 // Add mouse move event listener for interaction
                 renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-
+                
                 // Create initial plot with reduced data
                 setTimeout(() => {
                     updatePlot(true); // true for reduced data set on initial load
-
+                    
                     // Start animation
                     animate();
-
+                    
                     // Clear the initialization timeout since we've successfully initialized
                     clearTimeout(initializationTimeout);
                 }, 10);
-
+                
             } catch (err) {
                 clearTimeout(initializationTimeout);
                 showFallbackUI("Error initializing 3D visualization. Switching to 2D mode.");
@@ -1361,7 +1295,7 @@ function getColorForIV(iv) {
         // Mouse move handler for interaction
         function onMouseMove(event) {
     if (use2DMode || strikeLines.length === 0) return; // Check surfaceMesh instead of !surfaceMesh
-
+    
     // Calculate mouse position in normalized device coordinates
     const rect = renderer.domElement.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -1371,9 +1305,9 @@ function getColorForIV(iv) {
         // Update value display based on raycaster intersection
         function updateValueDisplay() {
     if (!raycaster || !camera || strikeLines.length === 0 || !mouse) return;
-
+    
     raycaster.setFromCamera(mouse, camera);
-
+    
     // Intersect with all the objects (including invisible tube meshes)
     const intersectableObjects = strikeLines.filter(obj => 
         obj.geometry && 
@@ -1381,43 +1315,40 @@ function getColorForIV(iv) {
         !obj.material.map // Exclude text sprites
     );
     const intersects = raycaster.intersectObjects(intersectableObjects);
-
+    
     if (intersects.length > 0) {
         const intersection = intersects[0];
         const point = intersection.point;
         const object = intersection.object;
-
+        
         const gridSize = 150;
         const strikeRange = 6400 - 5600;
         const ivRange = 0.9 - 0.1;
-
+        
         const scaleX = -gridSize / (strikeRange/2);
         const scaleZ = gridSize / (ivRange/2);
-
+        
         const offsetX = -6000;
         const offsetZ = -0.5;
-
+        
         // Convert coordinates back to data values
         const strike = Math.round((point.x / scaleX) - offsetX);
         let iv = parseFloat(((point.z / scaleZ) - offsetZ).toFixed(2));
-
+        
         // If we hit a tube mesh with stored IV data, use that for more accuracy
         if (object.userData && object.userData.iv !== undefined) {
             iv = object.userData.iv;
         }
-
+        
         // Clamp to valid ranges
         const clampedStrike = Math.max(5600, Math.min(6400, strike));
         const clampedIV = Math.max(0.10, Math.min(0.90, iv));
-
+        
         // Get the actual Greek value from the intersection point's Y coordinate
-        const scaleY = gridSize / ((maxValueGlobal - minValueGlobal) || 1);
-        const offsetY = -(minValueGlobal + maxValueGlobal) / 2;
-        const actualValue = (point.y / scaleY) - offsetY;
         const maxAbsValueGlobal = Math.max(Math.abs(minValueGlobal), Math.abs(maxValueGlobal));
 const scaleYGlobal = gridSize / (maxAbsValueGlobal || 1);
 const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-centered
-
+        
         strikeValueElement.textContent = clampedStrike;
         ivValueElement.textContent = clampedIV.toFixed(2);
         greekValueElement.textContent = actualValue.toFixed(4);
@@ -1430,16 +1361,15 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
         // Animation loop
         function animate() {
             if (use2DMode) return; // Don't animate in 2D mode
-
+            
             requestAnimationFrame(animate);
             if (controls) controls.update();
-
+            
             // Update value display based on mouse position
             updateValueDisplay();
-
+            
             if (renderer && scene && camera) renderer.render(scene, camera);
         }
-
         function getSmartScaling(minValue, maxValue) {
     // Check if values are predominantly on one side of zero
     const valueRange = maxValue - minValue;
@@ -1468,7 +1398,7 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                     <div>Generating visualization...</div>
                     <div class="loading-tips">This may take a few moments</div>
                 `;
-
+                
                 // Clear previous meshes
                 meshes.forEach(mesh => {
                     if (scene) {
@@ -1485,7 +1415,7 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                     }
                 });
                 meshes = [];
-
+                
                 // Clear grid group
                 if (gridGroup) {
                     while(gridGroup.children.length > 0) {
@@ -1501,7 +1431,7 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                         gridGroup.remove(child);
                     }
                 }
-
+                
                 // Clear strike lines
                 strikeLines.forEach(line => {
                     if (scene) {
@@ -1511,14 +1441,14 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                     }
                 });
                 strikeLines = [];
-
+                
                 // Generate new data
                 const surfaceData = generateReducedData(initialLoad);
-
+                
                 // Find min/max values for scaling
                 let minValue = Infinity;
                 let maxValue = -Infinity;
-
+                
                 surfaceData.forEach(strikePoints => {
                     strikePoints.forEach(point => {
                         minValue = Math.min(minValue, point.value);
@@ -1527,46 +1457,44 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                 });
                 minValueGlobal = minValue;
                 maxValueGlobal = maxValue;
-
+                
                 // Create reference grid with labels
                 createBackgroundGrid(minValue, maxValue);
-
+                
                 // Scaling factors for better visualization
                 const gridSize = 150;
                 const strikeRange = 6400 - 5600;
                 const ivRange = 0.9 - 0.1;
                 const valueRange = maxValue - minValue || 1; // Avoid division by zero
-
+                
                 // Use negative scaleX to invert the X-axis
                 const scaleX = -gridSize / (strikeRange/2);
-                const scaleY = gridSize / (valueRange/2);
                 const scaling = getSmartScaling(minValue, maxValue);
                 const scaleY = scaling.scaleY;
 
                 const scaleZ = gridSize / (ivRange/2);
-
+                
                 // Offset to center the plot
                 const offsetX = -6000;
-                const offsetY = -(minValue + maxValue) / 2;
                 const offsetY = scaling.offsetY;
                 const offsetZ = -0.5;
-
+                
                 loadingElement.innerHTML = `
                     <div class="loading-spinner"></div>
                     <div>Creating visualization...</div>
                     <div class="loading-tips">Almost there!</div>
                 `;
-
+                
                 // Create surface geometry
                 const geometrySurface = new THREE.BufferGeometry();
                 const vertices = [];
                 const colors = [];
                 const indices = [];
-
+                
                 // Create surface mesh vertices
                 const rows = surfaceData.length;
                 const cols = surfaceData[0]?.length || 0;
-
+                
                 // Create vertices and vertex colors
                 for (let i = 0; i < rows; i++) {
                     for (let j = 0; j < cols; j++) {
@@ -1574,17 +1502,17 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                         const x = (point.strike + offsetX) * scaleX;
                         const y = (point.value + offsetY) * scaleY;
                         const z = (point.iv + offsetZ) * scaleZ;
-
+                        
                         vertices.push(x, y, z);
-
+                        
                         // Color based on the value
                         const color = getColorForValue(point.value, minValue, maxValue);
                         const rgb = color.match(/\d+/g).map(Number);
-
+                        
                         colors.push(rgb[0]/255, rgb[1]/255, rgb[2]/255);
                     }
                 }
-
+                
                 // Create faces (triangles) for the surface
                 for (let i = 0; i < rows - 1; i++) {
                     for (let j = 0; j < cols - 1; j++) {
@@ -1592,20 +1520,20 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                         const b = i * cols + (j + 1);
                         const c = (i + 1) * cols + j;
                         const d = (i + 1) * cols + (j + 1);
-
+                        
                         // First triangle
                         indices.push(a, c, b);
-
+                        
                         // Second triangle
                         indices.push(b, c, d);
                     }
                 }
-
+                
                 geometrySurface.setIndex(indices);
                 geometrySurface.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
                 geometrySurface.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
                 geometrySurface.computeVertexNormals();
-
+                
                 // Enhanced material for better appearance on dark background
                 //const materialSurface = new THREE.MeshPhongMaterial({
                 //   vertexColors: true,
@@ -1615,23 +1543,23 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                 //    transparent: false,
                 //    depthWrite: true
                 //});
-
+                
                 //surfaceMesh = new THREE.Mesh(geometrySurface, materialSurface);
                 //scene.add(surfaceMesh);
                 //meshes.push(surfaceMesh);
-
+                
                 // Add lines along the strike curves (one line for each strike)
                 addIVLines(minValue, maxValue);
-
+                
                 // CREATE THE INVISIBLE INTERACTION SURFACE
                 //createInteractionSurface(minValue, maxValue);
-
+                
                 // Add title and axis labels
                 addAxisLabels(minValue, maxValue);
-
+                
                 loadingElement.style.display = 'none';
                 valueDisplay.style.display = 'block';
-
+                
                 // If this was the initial load with reduced data, schedule a full update
                 if (initialLoad) {
                     const fullUpdateMessage = document.createElement('div');
@@ -1645,14 +1573,14 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                     fullUpdateMessage.style.fontSize = '12px';
                     fullUpdateMessage.style.color = '#ffffff';
                     plotContainer.appendChild(fullUpdateMessage);
-
+                    
                     // Schedule full data update after 2 seconds
                     setTimeout(() => {
                         updatePlot(false);
                         fullUpdateMessage.remove();
                     }, 2000);
                 }
-
+                
             } catch (err) {
                 loadingElement.innerHTML = `
                     <div>Error generating visualization</div>
@@ -1660,7 +1588,7 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                     <button id="error2DButton" class="fallback-button">Switch to 2D Mode</button>
                 `;
                 loadingElement.style.display = 'flex';
-
+                
                 // Add event listener for 2D switch button
                 document.getElementById('error2DButton').addEventListener('click', function() {
                     use2DMode = true;
@@ -1675,32 +1603,30 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
     const strikeRange = 6400 - 5600; // Correct range
     const ivRange = 0.9 - 0.1;
     const valueRange = maxValue - minValue || 1;
-
+    
     const scaleX = -gridSize / (strikeRange/2);
-    const scaleY = gridSize / (valueRange/2);
     const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
     const scaleY = gridSize / (maxAbsValue || 1);
     const scaleZ = gridSize / (ivRange/2);
-
+    
     const offsetX = -6000;
-    const offsetY = -(minValue + maxValue) / 2;
     const offsetY = 0;
     const offsetZ = -0.5;
-
+    
     // Create a simple plane geometry for interaction
     const geometry = new THREE.PlaneGeometry(gridSize * 2, gridSize * 2, 40, 40);
-
+    
     // Position and rotate the plane to match the data orientation
     geometry.rotateX(-Math.PI / 2); // Rotate to be horizontal
     geometry.translate(0, offsetY, 0); // Move to center
-
+    
     // Create invisible material
     const material = new THREE.MeshBasicMaterial({
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide
     });
-
+    
     // Create the mesh
     surfaceMesh = new THREE.Mesh(geometry, material);
     scene.add(surfaceMesh);
@@ -1713,41 +1639,38 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
     for (let iv = 0.10; iv <= 0.90; iv += 0.01) {
         keyIVs.push(parseFloat(iv.toFixed(2)));
     }
-
+    
     const gridSize = 150;
     const strikeRange = 6400 - 5600; // CHANGED: 800 instead of 400
     const ivRange = 0.9 - 0.1;
     const valueRange = maxValue - minValue || 1;
-
+    
     const scaleX = -gridSize / (strikeRange/2);
-    const scaleY = gridSize / (valueRange/2);
     const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
     const scaleY = gridSize / (maxAbsValue || 1);
     const scaleZ = gridSize / (ivRange/2);
-
+    
     const offsetX = -6000;
-    const offsetY = -(minValue + maxValue) / 2;
     const offsetY = 0;
     const offsetZ = -0.5;
-
+    
     keyIVs.forEach(iv => {
         const linePoints = [];
-
+        
         // CHANGED: Create points from 5600 to 6400
         for (let strike = 5600; strike <= 6400; strike += 1) {
             const greekValue = getGreekValue(DEFAULT_SPOT, strike, iv);
-
+            
             const x = (strike + offsetX) * scaleX;
-            const y = (greekValue + offsetY) * scaleY;
             const y = greekValue * scaleY;
             const z = (iv + offsetZ) * scaleZ;
-
+            
             linePoints.push(new THREE.Vector3(x, y, z));
         }
-
+        
         if (linePoints.length > 0) {
             const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-
+            
             const color = getColorForIV(iv);
             const lineMaterial = new THREE.LineBasicMaterial({
                 color: color,
@@ -1755,7 +1678,7 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
                 transparent: false,
                 opacity: 1.0
             });
-
+            
             const line = new THREE.Line(lineGeometry, lineMaterial);
             scene.add(line);
             strikeLines.push(line);
@@ -1763,12 +1686,12 @@ const actualValue = point.y / scaleYGlobal; // Direct scaling since we're zero-c
 line.userData = { iv: iv };
             if (Math.abs(iv % 0.1) < 0.005) {
                 const lastPoint = linePoints[linePoints.length - 1];
-
+                
                 const ivLabel = createTextSprite(iv.toFixed(1), {
                     fontsize: 30,
                     textColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }
                 });
-
+                
                 ivLabel.position.set(lastPoint.x - 10, lastPoint.y, lastPoint.z);
                 ivLabel.scale.set(120, 60, 1.0);
                 scene.add(ivLabel);
@@ -1781,10 +1704,10 @@ line.userData = { iv: iv };
         // Create a background grid with labeled axes
         function createBackgroundGrid(minValue, maxValue) {
     const gridSize = 150;
-
+    
     const container = new THREE.Object3D();
     gridGroup.add(container);
-
+            
             // Material with depthWrite = false to ensure grid is always visible
             const gridMaterial = new THREE.LineBasicMaterial({ 
     color: 0xcccccc,        // Changed from 0x000000 to light grey
@@ -1794,64 +1717,64 @@ line.userData = { iv: iv };
     depthTest: true,
     linewidth: 1.5
 });
-
+            
             // Denser grid
             const minorGridStep = 15; 
-
+            
             // XZ Plane (bottom)
             const xzGridGeometry = new THREE.BufferGeometry();
             const xzVertices = [];
-
+            
             // X lines
             for (let x = -gridSize; x <= gridSize; x += minorGridStep) {
                 xzVertices.push(x, 0, -gridSize, x, 0, gridSize);
             }
-
+            
             // Z lines
             for (let z = -gridSize; z <= gridSize; z += minorGridStep) {
                 xzVertices.push(-gridSize, 0, z, gridSize, 0, z);
             }
-
+            
             xzGridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(xzVertices, 3));
             const xzGrid = new THREE.LineSegments(xzGridGeometry, gridMaterial);
             container.add(xzGrid);
-
+            
             // XY Plane (back wall)
             const xyGridGeometry = new THREE.BufferGeometry();
             const xyVertices = [];
-
+            
             // X lines
             for (let x = -gridSize; x <= gridSize; x += minorGridStep) {
                 xyVertices.push(x, -gridSize, gridSize, x, gridSize, gridSize);
             }
-
+            
             // Y lines
             for (let y = -gridSize; y <= gridSize; y += minorGridStep) {
                 xyVertices.push(-gridSize, y, gridSize, gridSize, y, gridSize);
             }
-
+            
             xyGridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(xyVertices, 3));
             const xyGrid = new THREE.LineSegments(xyGridGeometry, gridMaterial);
             container.add(xyGrid);
-
+            
             // YZ Plane (left wall)
             const yzGridGeometry = new THREE.BufferGeometry();
             const yzVertices = [];
-
+            
             // Y lines
             for (let y = -gridSize; y <= gridSize; y += minorGridStep) {
                 yzVertices.push(-gridSize, y, -gridSize, -gridSize, y, gridSize);
             }
-
+            
             // Z lines
             for (let z = -gridSize; z <= gridSize; z += minorGridStep) {
                 yzVertices.push(-gridSize, -gridSize, z, -gridSize, gridSize, z);
             }
-
+            
             yzGridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(yzVertices, 3));
             const yzGrid = new THREE.LineSegments(yzGridGeometry, gridMaterial);
             container.add(yzGrid);
-
+            
             // Axes with brighter color
             const axesMaterial = new THREE.LineBasicMaterial({ 
                 color: 0xcccccc,
@@ -1859,7 +1782,7 @@ line.userData = { iv: iv };
                 transparent: false,
                 opacity: 1.0
             });
-
+            
             // X-axis - at maximum Z (back)
             const xAxisGeometry = new THREE.BufferGeometry();
             const xAxisVertices = new Float32Array([
@@ -1869,7 +1792,7 @@ line.userData = { iv: iv };
             xAxisGeometry.setAttribute('position', new THREE.BufferAttribute(xAxisVertices, 3));
             const xAxis = new THREE.Line(xAxisGeometry, axesMaterial);
             container.add(xAxis);
-
+            
             // Y-axis - at maximum Z (back)
             const yAxisGeometry = new THREE.BufferGeometry();
             const yAxisVertices = new Float32Array([
@@ -1879,7 +1802,7 @@ line.userData = { iv: iv };
             yAxisGeometry.setAttribute('position', new THREE.BufferAttribute(yAxisVertices, 3));
             const yAxis = new THREE.Line(yAxisGeometry, axesMaterial);
             container.add(yAxis);
-
+            
             // Z-axis
             const zAxisGeometry = new THREE.BufferGeometry();
             const zAxisVertices = new Float32Array([
@@ -1889,16 +1812,16 @@ line.userData = { iv: iv };
             zAxisGeometry.setAttribute('position', new THREE.BufferAttribute(zAxisVertices, 3));
             const zAxis = new THREE.Line(zAxisGeometry, axesMaterial);
             container.add(zAxis);
-
+            
             // White text for axis labels on dark background
             const axisLabelFontSize = 30;
             const axisLabelScale = new THREE.Vector3(120, 60, 1.0);
             const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
-
+            
             // Strike (X-axis) labels - inverted order and at foreground
             const strikeValues = [6400, 6200, 6000, 5800, 5600]; // CHANGED: new values
     const strikePositions = [-gridSize * 0.8, -gridSize * 0.4, 0, gridSize * 0.4, gridSize * 0.8];
-
+    
     strikePositions.forEach((pos, index) => {
         const label = createTextSprite(strikeValues[index].toString(), {
             fontsize: 30,
@@ -1908,11 +1831,11 @@ line.userData = { iv: iv };
         label.scale.set(120, 60, 1.0);
         container.add(label);
     });
-
+            
             // IV (Z-axis) labels
             const ivValues = [0.1, 0.3, 0.5, 0.7, 0.9];
             const ivPositions = [-gridSize * 0.8, -gridSize * 0.4, 0, gridSize * 0.4, gridSize * 0.8];
-
+            
             ivPositions.forEach((pos, index) => {
                 const label = createTextSprite(ivValues[index].toFixed(1), {
                     fontsize: axisLabelFontSize,
@@ -1922,21 +1845,8 @@ line.userData = { iv: iv };
                 label.scale.copy(axisLabelScale);
                 container.add(label);
             });
-
+            
             // Greek value (Y-axis) labels - at foreground (minimum Z)
-            const valueStep = (maxValue - minValue) / 4;
-            for (let i = 0; i <= 4; i++) {
-                const value = minValue + i * valueStep;
-                const position = -gridSize + i * gridSize / 2;
-                
-                const label = createTextSprite(value.toFixed(3), {
-                    fontsize: axisLabelFontSize,
-                    textColor: textColor
-                });
-                label.position.set(-gridSize - 25, position, -gridSize - 15);
-                label.scale.copy(axisLabelScale);
-                container.add(label);
-            }
             // Greek value (Y-axis) labels - symmetric around zero
 const maxAbsValue = Math.max(Math.abs(minValue), Math.abs(maxValue));
 const labelValues = [
@@ -1963,7 +1873,7 @@ labelValues.forEach((value) => {
         function addAxisLabels(minValue, maxValue) {
             const gridSize = 150;
             const textColor = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
-
+            
             // X Label
             const xLabel = createTextSprite("Strike Price (K)", {
                 fontsize: 24,
@@ -1972,7 +1882,7 @@ labelValues.forEach((value) => {
             xLabel.position.set(0, -40, -gridSize - 15);
             scene.add(xLabel);
             meshes.push(xLabel);
-
+            
             // Y Label
             const yLabel = createTextSprite(getGreekDisplayName(greekSelect.value), {
                 fontsize: 24,
@@ -1981,7 +1891,7 @@ labelValues.forEach((value) => {
             yLabel.position.set(-gridSize - 25, 50, -gridSize - 15);
             scene.add(yLabel);
             meshes.push(yLabel);
-
+            
             // Z Label
             const zLabel = createTextSprite("Implied Volatility (IV)", {
                 fontsize: 24,
@@ -1999,7 +1909,7 @@ labelValues.forEach((value) => {
                 showFallbackUI('WebGL is not supported by your browser. Switching to 2D mode.');
                 return;
             }
-
+            
             // Set a timeout to detect if initialization takes too long
             initializationTimeout = setTimeout(function() {
                 if (!initializationAttempted) {
@@ -2014,7 +1924,7 @@ labelValues.forEach((value) => {
                         </div>
                         <button id="switch2DButton" class="fallback-button">Switch to 2D Mode</button>
                     `;
-
+                    
                     document.getElementById('switch2DButton').addEventListener('click', function() {
                         clearTimeout(initializationTimeout);
                         use2DMode = true;
@@ -2023,7 +1933,7 @@ labelValues.forEach((value) => {
                     });
                 }
             }, 10000); // 10 seconds timeout
-
+            
             // Try to initialize
             try {
                 init();
@@ -2052,7 +1962,7 @@ labelValues.forEach((value) => {
                 updatePlot();
             }
         });
-
+        
         optionTypeSelect.addEventListener('change', () => {
             if (use2DMode) {
                 init2DMode();
@@ -2060,7 +1970,7 @@ labelValues.forEach((value) => {
                 updatePlot();
             }
         });
-
+        
         positionTypeSelect.addEventListener('change', () => {
             if (use2DMode) {
                 init2DMode();
@@ -2068,14 +1978,14 @@ labelValues.forEach((value) => {
                 updatePlot();
             }
         });
-
+        
         daysToExpiryInput.addEventListener('change', () => {
             // Validate input: ensure it's between 0.01 and 365
             let days = parseFloat(daysToExpiryInput.value);
             if (isNaN(days) || days < 0.000001) days = 0.000001;
             if (days > 365) days = 365;
             daysToExpiryInput.value = days; // Update with validated value
-
+            
             if (use2DMode) {
                 init2DMode();
             } else {
