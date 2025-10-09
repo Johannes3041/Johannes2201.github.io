@@ -462,6 +462,7 @@
                         <option value="zomma">Zomma</option>
                         <option value="color">Color</option>
                         <option value="ultima">Ultima</option>
+                        <option value="via">Via (dVanna/dVol)</option>
                         <option value="parmicharma">Parmicharma</option>
                     </select>
                 </div>
@@ -624,6 +625,11 @@
         <p>\(-\frac{\nu}{\sigma^2}[d_1d_2(1-d_1d_2) + d_1^2 + d_2^2]\)</p>
       </div>
 
+      <div class="formula">
+    <h4>Via</h4>
+    <p>\(-e^{-qT}N'(d_1)\frac{d_1 d_2^2 - d_1 - d_2}{\sigma^2}\)</p>
+</div>
+
       <!-- Parmicharma - Fixed to be in single formula box -->
       <div class="formula">
         <h4>Parmicharma</h4>
@@ -652,7 +658,7 @@
         <div class="greek-classifications">
           <p><strong>First Order:</strong> Delta, Vega, Theta</p>
           <p><strong>Second Order:</strong> Gamma, Vanna, Charm, Vomma, Veta</p>
-          <p><strong>Third Order:</strong> Speed, Zomma, Color, Ultima, Parmicharma</p>
+          <p><strong>Third Order:</strong> Speed, Zomma, Color, Ultima, Via, Parmicharma</p>
         </div>
       </div>
     </div>
@@ -994,11 +1000,12 @@
             const ultima = -vega / (sigma * sigma) * (d1 * d2 * (1 - d1 * d2) + d1 * d1 + d2 * d2);
             const dd1_dt = (r - q + sigma * sigma / 2) / (sigma * Math.sqrt(T)) - d1 / (2 * T);
             const dd2_dt = dd1_dt - sigma / (2 * Math.sqrt(T));
+            const via = (-Math.exp(-q * T) * normPDF(d1) * (d1 * d2 * d2 - d1 - d2) / (sigma * sigma))/100;
             const parmicharma = ((q - (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T))) * charm - 
                 Math.exp(-q * T) * normPDF(d1) * (2 * d2 * sigma * sigma * T - (r - q) * sigma * T * Math.sqrt(T) - 
                 sigma * sigma * sigma * T * T * dd2_dt) / (2 * T * T * T * sigma * sigma))/2008;
 
-            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, parmicharma };
+            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, via, parmicharma };
         }
 
         // Calculate Put option price and Greeks
@@ -1026,11 +1033,12 @@
             const ultima = -vega / (sigma * sigma) * (d1 * d2 * (1 - d1 * d2) + d1 * d1 + d2 * d2);
             const dd1_dt = (r - q + sigma * sigma / 2) / (sigma * Math.sqrt(T)) - d1 / (2 * T);
             const dd2_dt = dd1_dt - sigma / (2 * Math.sqrt(T));
+            const via = (-Math.exp(-q * T) * normPDF(d1) * (d1 * d2 * d2 - d1 - d2) / (sigma * sigma))/100;
             const parmicharma = ((q - (2 * (r - q) * T - d2 * sigma * Math.sqrt(T)) / (2 * T * sigma * Math.sqrt(T))) * charm - 
                 Math.exp(-q * T) * normPDF(d1) * (2 * d2 * sigma * sigma * T - (r - q) * sigma * T * Math.sqrt(T) - 
                 sigma * sigma * sigma * T * T * dd2_dt) / (2 * T * T * T * sigma * sigma))/2008;
 
-            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, parmicharma };
+            return { price, delta, gamma, vega, vanna, charm, theta, vomma, veta, speed, zomma, color, ultima, via, parmicharma };
         }
 
         // Helper function to get the selected Greek value based on option type and position
@@ -1114,6 +1122,7 @@
                     'zomma': 'Zomma',
                     'color': 'Color',
                     'ultima': 'Ultima',
+                    'via': 'Via',
                     'parmicharma': 'Parmicharma'
             };
             return greekMap[greek] || greek;
