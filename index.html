@@ -7,126 +7,252 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #0d1117; color: #e6edf3; line-height: 1.5; }
-        .page { max-width: 1500px; margin: 0 auto; padding: 16px; }
-        h1 { text-align: center; margin-bottom: 14px; color: #e6edf3; font-size: 20px; letter-spacing: .02em; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; font-size: 11px; }
+
+        body {
+            background: #d4d0c8;
+            color: #000;
+        }
+
+        /* classic win32 raised bevel */
+        .raised {
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+        }
+        /* sunken inset */
+        .sunken {
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+        }
+
+        /* title bar */
+        .titlebar {
+            background: linear-gradient(to right, #0a246a, #a6caf0);
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+        .titlebar-icon { font-size: 12px; }
+
+        .page {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 4px;
+        }
 
         /* layout */
-        .layout { display: flex; gap: 16px; align-items: flex-start; }
+        .layout { display: flex; gap: 4px; align-items: flex-start; padding: 4px; }
+
         .left-panel {
-            width: 300px; flex-shrink: 0;
-            background: #161b22; border: 1px solid #30363d;
-            border-radius: 8px; padding: 14px;
-            max-height: calc(100vh - 80px); overflow-y: auto;
+            width: 268px;
+            flex-shrink: 0;
+            background: #d4d0c8;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
         }
-        .right-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+        .right-panel { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+        /* group boxes — classic win32 groupbox */
+        .groupbox {
+            border: 1px solid #808080;
+            border-top: 1px solid #808080;
+            margin: 6px 4px 4px 4px;
+            padding: 4px 5px 5px 5px;
+            position: relative;
+        }
+        .groupbox-title {
+            position: absolute;
+            top: -7px;
+            left: 6px;
+            background: #d4d0c8;
+            padding: 0 3px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+        }
+        .groupbox-body { margin-top: 4px; }
 
         /* surface boxes */
         .surface-box {
-            position: relative; border-radius: 8px; overflow: hidden;
-            border: 1px solid #30363d; background: #0d1117;
+            position: relative;
+            overflow: hidden;
             height: 420px;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            background: #000;
         }
         .surface-box canvas { display: block; width: 100% !important; height: 100% !important; }
         #pnlContainer, #greekContainer { position: absolute; inset: 0; width: 100%; height: 100%; }
+
         .surface-label {
-            position: absolute; top: 10px; left: 12px; z-index: 20;
-            font-size: 12px; font-weight: 700; color: #8b949e;
-            text-transform: uppercase; letter-spacing: .08em;
-            background: rgba(13,17,23,.7); padding: 3px 8px; border-radius: 4px;
+            position: absolute; top: 4px; left: 6px; z-index: 20;
+            font-size: 11px; font-weight: bold; color: #d4d0c8;
+            background: rgba(0,0,0,0.6);
+            padding: 1px 5px;
         }
+
         .surface-loading {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            background: rgba(13,17,23,.92); z-index: 10; gap: 12px; font-size: 13px;
-            color: #8b949e;
+            background: rgba(0,0,0,0.88); z-index: 10; gap: 8px; font-size: 11px;
+            color: #d4d0c8;
         }
-        .spinner { width: 32px; height: 32px; border: 4px solid #21262d; border-top-color: #4f8fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid #555;
+            border-top-color: #d4d0c8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* hover overlay */
         .hover-info {
-            position: absolute; top: 10px; right: 10px; z-index: 20;
-            background: rgba(22,27,34,.9); border: 1px solid #30363d;
-            border-radius: 6px; padding: 8px 12px; font-size: 12px; min-width: 160px;
+            position: absolute; top: 6px; right: 6px; z-index: 20;
+            background: #d4d0c8;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            padding: 4px 7px; font-size: 11px; min-width: 150px;
             display: none;
         }
-        .hover-info p { margin: 3px 0; color: #8b949e; }
-        .hover-info span { color: #e6edf3; font-weight: 600; }
-        .hover-pnl-pos { color: #3fb950 !important; }
-        .hover-pnl-neg { color: #f85149 !important; }
+        .hover-info p { margin: 1px 0; color: #000; }
+        .hover-info span { color: #000; font-weight: bold; }
+        .hover-pnl-pos { color: #006400 !important; }
+        .hover-pnl-neg { color: #cc0000 !important; }
 
-        /* controls */
-        .section-title {
-            font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
-            color: #4f8fff; margin: 14px 0 8px; font-weight: 700;
-            border-bottom: 1px solid #21262d; padding-bottom: 5px;
-        }
-        .section-title:first-child { margin-top: 0; }
-        .ctrl { margin-bottom: 8px; }
-        .ctrl label { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 600; color: #8b949e; }
-        .inp {
-            width: 100%; padding: 6px 9px; border: 1px solid #30363d; border-radius: 5px;
-            font-size: 12px; background: #0d1117; color: #e6edf3;
-            transition: border-color .15s;
-        }
-        .inp:focus { outline: none; border-color: #4f8fff; }
-        select.inp { cursor: pointer; }
-        .row { display: flex; gap: 8px; }
+        /* labels */
+        .ctrl { margin-bottom: 4px; }
+        .ctrl label { display: block; margin-bottom: 1px; color: #000; }
+        .row { display: flex; gap: 4px; }
         .row .ctrl { flex: 1; }
+
+        /* inputs — sunken win32 style */
+        .inp {
+            width: 100%;
+            padding: 1px 3px;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            background: #fff;
+            color: #000;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+        }
+        .inp:focus { outline: 1px dotted #000; outline-offset: -2px; }
+        select.inp { cursor: pointer; background: #fff; }
 
         /* slider */
         .slider-wrap { position: relative; }
         .slider-wrap input[type=range] {
-            width: 100%; height: 4px; cursor: pointer; accent-color: #4f8fff;
-            background: #21262d; border-radius: 2px; border: none; padding: 0;
+            width: 100%; cursor: pointer;
+            accent-color: #0a246a;
+            height: 16px;
+            border: none; padding: 0; background: transparent;
         }
-        .slider-track-fill {
-            position: absolute; top: 50%; left: 0; height: 4px;
-            background: #4f8fff; border-radius: 2px;
-            pointer-events: none; transform: translateY(-50%);
-        }
-        .slider-label { display: flex; justify-content: space-between; font-size: 10px; color: #6e7681; margin-top: 3px; }
+        .slider-label { display: flex; justify-content: space-between; color: #000; margin-top: 1px; }
 
-        /* buttons */
+        /* buttons — classic raised win32 */
         .btn {
-            width: 100%; padding: 8px; border: none; border-radius: 5px;
-            font-size: 12px; font-weight: 700; cursor: pointer; transition: filter .15s;
-            margin-top: 4px;
+            width: 100%;
+            padding: 3px 8px;
+            background: #d4d0c8;
+            color: #000;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 3px;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            text-align: center;
         }
-        .btn:hover { filter: brightness(1.15); }
-        .btn-blue { background: #1f6feb; color: #fff; }
-        .btn-green { background: #238636; color: #fff; }
-        .btn-red { background: #da3633; color: #fff; font-size: 11px; padding: 5px 8px; width: auto; margin: 0; }
+        .btn:active {
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            padding: 4px 7px 2px 9px;
+        }
+        .btn:hover { background: #e0ddd6; }
+        .btn-green { color: #006400; font-weight: bold; }
+        .btn-blue { color: #00008b; font-weight: bold; }
+        .btn-red {
+            width: auto; margin: 0; padding: 1px 5px;
+            font-size: 11px; color: #cc0000; font-weight: bold;
+            background: #d4d0c8;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            cursor: pointer;
+        }
+        .btn-red:active {
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+        }
 
         /* contract cards */
-        .contracts-list { margin: 4px 0; }
+        .contracts-list { margin: 2px 0; }
         .contract-card {
-            background: #0d1117; border: 1px solid #30363d; border-radius: 5px;
-            padding: 7px 10px; margin-bottom: 5px;
-            border-left: 3px solid #4f8fff; font-size: 11px;
-            display: flex; justify-content: space-between; align-items: flex-start;
+            background: #fff;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            padding: 3px 5px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-left-width: 3px;
+            border-left-color: #0a246a;
         }
-        .contract-card.short { border-left-color: #f85149; }
-        .contract-info { color: #8b949e; line-height: 1.7; }
-        .contract-info strong { color: #e6edf3; font-size: 12px; }
-        .no-contracts { color: #484f58; font-size: 11px; font-style: italic; padding: 6px 0; }
-
-        /* pills */
-        .view-pills { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
-        .pill {
-            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            cursor: pointer; border: 1px solid #30363d; background: #161b22; color: #8b949e;
-            transition: all .15s;
-        }
-        .pill.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
-        .pill:hover:not(.active) { border-color: #8b949e; color: #e6edf3; }
+        .contract-card.short { border-left-color: #cc0000; }
+        .contract-info { color: #000; line-height: 1.5; }
+        .contract-info strong { color: #000; font-weight: bold; }
+        .no-contracts { color: #808080; font-style: italic; padding: 3px 0; }
 
         /* footer */
-        .footer { text-align: center; margin-top: 12px; font-size: 12px; color: #484f58; }
-        .footer a { color: #4f8fff; text-decoration: none; }
+        .footer { text-align: center; margin-top: 6px; color: #444; padding: 3px; }
+        .footer a { color: #0000cc; }
         .mjx-container { overflow: visible !important; scrollbar-width: none !important; }
+
+        /* scrollbar — classic */
+        ::-webkit-scrollbar { width: 16px; }
+        ::-webkit-scrollbar-track { background: #d4d0c8; }
+        ::-webkit-scrollbar-thumb {
+            background: #d4d0c8;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+        }
+        ::-webkit-scrollbar-button { background: #d4d0c8; height: 16px;
+            border-top: 1px solid #fff; border-left: 1px solid #fff;
+            border-right: 1px solid #808080; border-bottom: 1px solid #808080;
+        }
 
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
@@ -136,118 +262,135 @@
 </head>
 <body>
 <div class="page">
-    <h1>Black-Scholes Portfolio — Greeks & P&L</h1>
+    <div class="titlebar">
+    <span class="titlebar-icon">📈</span>
+    Black-Scholes Portfolio — Greeks &amp; P&amp;L
+</div>
 
     <div class="layout">
 
         <!-- left panel -->
         <div class="left-panel">
 
-            <!-- Portfolio -->
-            <div class="section-title">Portfolio</div>
-            <div id="contractsList" class="contracts-list">
-                <div class="no-contracts">No contracts yet — add one below.</div>
-            </div>
-
-            <!-- Add contract -->
-            <div class="section-title">Add Contract</div>
-            <div class="row">
-                <div class="ctrl">
-                    <label>Type</label>
-                    <select id="newType" class="inp" onchange="updateFairValue()">
-                        <option value="call">Call</option>
-                        <option value="put">Put</option>
-                    </select>
-                </div>
-                <div class="ctrl">
-                    <label>Position</label>
-                    <select id="newPos" class="inp">
-                        <option value="long">Long</option>
-                        <option value="short">Short</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="ctrl"><label>Strike (K)</label><input type="number" id="newK" class="inp" value="6000" step="5" oninput="updateFairValue()"></div>
-                <div class="ctrl"><label>Qty</label><input type="number" id="newQty" class="inp" value="1" min="1" step="1"></div>
-            </div>
-            <div class="row">
-                <div class="ctrl"><label>DTE (days)</label><input type="number" id="newDTE" class="inp" value="30" step="1" min="0.001" oninput="updateFairValue()"></div>
-                <div class="ctrl">
-                    <label>Premium Paid <span id="fairValueHint" style="color:#3fb950;font-weight:700;font-size:10px;cursor:pointer;" onclick="useFairValue()" title="Click to use fair value">—</span></label>
-                    <input type="number" id="newPrem" class="inp" value="0" step="0.01" min="0">
-                </div>
-            </div>
-            <button class="btn btn-green" onclick="addContract()">+ Add Contract</button>
-
-            <!-- Global params -->
-            <div class="section-title">Global Parameters</div>
-            <div class="row">
-                <div class="ctrl"><label>Current Spot (S)</label><input type="number" id="currentSpot" class="inp" value="6000" step="50" oninput="updateFairValue()"></div>
-                <div class="ctrl"><label>IV for pricing (σ)</label><input type="number" id="pricingIV" class="inp" value="0.20" step="0.01" min="0.01" oninput="updateFairValue()"></div>
-            </div>
-            <div class="row">
-                <div class="ctrl"><label>Rate (r)</label><input type="number" id="gRate" class="inp" value="0.03" step="0.005" oninput="updateFairValue()"></div>
-                <div class="ctrl"><label>Div. Yield (q)</label><input type="number" id="gDiv" class="inp" value="0.00001" step="0.005" oninput="updateFairValue()"></div>
-            </div>
-            <div class="row">
-                <div class="ctrl"><label>Spot Min</label><input type="number" id="spotMin" class="inp" value="5600" step="100"></div>
-                <div class="ctrl"><label>Spot Max</label><input type="number" id="spotMax" class="inp" value="6400" step="100"></div>
-            </div>
-
-            <!-- Time slider -->
-            <div class="section-title">Time — Days Elapsed</div>
-            <div class="ctrl">
-                <label>Elapsed: <strong id="elapsedVal" style="color:#4f8fff">0</strong>d &nbsp;|&nbsp; Remaining: <strong id="remainingVal" style="color:#3fb950">30</strong>d</label>
-                <div class="slider-wrap">
-                    <input type="range" id="elapsedSlider" min="0" max="30" value="0" step="0.1" oninput="onElapsedChange(this.value)">
-                </div>
-                <div class="slider-label"><span>0</span><span id="sliderMaxLabel">30</span></div>
-            </div>
-            <div class="row">
-                <div class="ctrl">
-                    <label>Or type days elapsed</label>
-                    <input type="number" id="elapsedNum" class="inp" value="0" min="0" step="0.1" oninput="onElapsedChange(this.value, true)">
+            <div class="groupbox">
+                <div class="groupbox-title">Portfolio</div>
+                <div class="groupbox-body">
+                    <div id="contractsList" class="contracts-list">
+                        <div class="no-contracts">No contracts yet — add one below.</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Greek surface selector -->
-            <div class="section-title">Greek Surface — Select Greek</div>
-            <div class="ctrl">
-                <label>Greek to display</label>
-                <select id="greekSelect" class="inp">
-                    <option value="delta">Delta (Δ)</option>
-                    <option value="gamma">Gamma (Γ)</option>
-                    <option value="vega">Vega (ν)</option>
-                    <option value="theta">Theta (Θ)</option>
-                    <option value="vanna">Vanna</option>
-                    <option value="charm">Charm</option>
-                    <option value="vomma">Vomma</option>
-                    <option value="veta">Veta</option>
-                    <option value="speed">Speed</option>
-                    <option value="zomma">Zomma</option>
-                    <option value="color">Color</option>
-                    <option value="ultima">Ultima</option>
-                    <option value="via">Via</option>
-                    <option value="parmicharma">Parmicharma</option>
-                </select>
-            </div>
-            <div class="ctrl">
-                <label>Aggregate method</label>
-                <select id="greekAgg" class="inp">
-                    <option value="sum">Sum (portfolio net greek)</option>
-                    <option value="abs">Sum of absolutes</option>
-                </select>
+            <div class="groupbox">
+                <div class="groupbox-title">Add Contract</div>
+                <div class="groupbox-body">
+                    <div class="row">
+                        <div class="ctrl">
+                            <label>Type</label>
+                            <select id="newType" class="inp" onchange="updateFairValue()">
+                                <option value="call">Call</option>
+                                <option value="put">Put</option>
+                            </select>
+                        </div>
+                        <div class="ctrl">
+                            <label>Position</label>
+                            <select id="newPos" class="inp">
+                                <option value="long">Long</option>
+                                <option value="short">Short</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ctrl"><label>Strike (K)</label><input type="number" id="newK" class="inp" value="6000" step="5" oninput="updateFairValue()"></div>
+                        <div class="ctrl"><label>Qty</label><input type="number" id="newQty" class="inp" value="1" min="1" step="1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="ctrl"><label>DTE (days)</label><input type="number" id="newDTE" class="inp" value="30" step="1" min="0.001" oninput="updateFairValue()"></div>
+                        <div class="ctrl">
+                            <label>Premium Paid <span id="fairValueHint" style="color:#006400;font-weight:bold;cursor:pointer;" onclick="useFairValue()" title="Click to use fair value">—</span></label>
+                            <input type="number" id="newPrem" class="inp" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <button class="btn btn-green" onclick="addContract()">+ Add Contract</button>
+                </div>
             </div>
 
-            <!-- Refresh -->
-            <button class="btn btn-blue" style="margin-top:10px" onclick="refreshAll()">↺ Refresh Both Surfaces</button>
-
-            <!-- Nav tips -->
-            <div style="margin-top:14px;font-size:11px;color:#484f58;line-height:1.8;">
-                <strong style="color:#6e7681;">Navigation:</strong> drag to rotate · scroll to zoom · right-drag to pan<br>
-                <strong style="color:#6e7681;">Axes:</strong> X = Spot · Z = IV · Y = value
+            <div class="groupbox">
+                <div class="groupbox-title">Global Parameters</div>
+                <div class="groupbox-body">
+                    <div class="row">
+                        <div class="ctrl"><label>Current Spot (S)</label><input type="number" id="currentSpot" class="inp" value="6000" step="" oninput="updateFairValue()"></div>
+                        <div class="ctrl"><label>IV for pricing (σ)</label><input type="number" id="pricingIV" class="inp" value="0.20" step="0.01" min="0.01" oninput="updateFairValue()"></div>
+                    </div>
+                    <div class="row">
+                        <div class="ctrl"><label>Rate (r)</label><input type="number" id="gRate" class="inp" value="0.03" step="0.005" oninput="updateFairValue()"></div>
+                        <div class="ctrl"><label>Div. Yield (q)</label><input type="number" id="gDiv" class="inp" value="0.00001" step="0.005" oninput="updateFairValue()"></div>
+                    </div>
+                    <div class="row">
+                        <div class="ctrl"><label>Spot Min</label><input type="number" id="spotMin" class="inp" value="5600" step="100"></div>
+                        <div class="ctrl"><label>Spot Max</label><input type="number" id="spotMax" class="inp" value="6400" step="100"></div>
+                    </div>
+                </div>
             </div>
+
+            <div class="groupbox">
+                <div class="groupbox-title">Time — Days Elapsed</div>
+                <div class="groupbox-body">
+                    <div class="ctrl">
+                        <label>Elapsed: <strong id="elapsedVal">0</strong>d &nbsp;|&nbsp; Remaining: <strong id="remainingVal">30</strong>d</label>
+                        <div class="slider-wrap">
+                            <input type="range" id="elapsedSlider" min="0" max="30" value="0" step="0.1" oninput="onElapsedChange(this.value)">
+                        </div>
+                        <div class="slider-label"><span>0</span><span id="sliderMaxLabel">30</span></div>
+                    </div>
+                    <div class="ctrl">
+                        <label>Days elapsed (type)</label>
+                        <input type="number" id="elapsedNum" class="inp" value="0" min="0" step="0.1" oninput="onElapsedChange(this.value, true)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="groupbox">
+                <div class="groupbox-title">Greek Surface</div>
+                <div class="groupbox-body">
+                    <div class="ctrl">
+                        <label>Greek</label>
+                        <select id="greekSelect" class="inp">
+                            <option value="delta">Delta (Δ)</option>
+                            <option value="gamma">Gamma (Γ)</option>
+                            <option value="vega">Vega (ν)</option>
+                            <option value="theta">Theta (Θ)</option>
+                            <option value="vanna">Vanna</option>
+                            <option value="charm">Charm</option>
+                            <option value="vomma">Vomma</option>
+                            <option value="veta">Veta</option>
+                            <option value="speed">Speed</option>
+                            <option value="zomma">Zomma</option>
+                            <option value="color">Color</option>
+                            <option value="ultima">Ultima</option>
+                            <option value="via">Via</option>
+                            <option value="parmicharma">Parmicharma</option>
+                        </select>
+                    </div>
+                    <div class="ctrl">
+                        <label>Aggregate</label>
+                        <select id="greekAgg" class="inp">
+                            <option value="sum">Sum (net)</option>
+                            <option value="abs">Sum of absolutes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 4px;">
+                <button class="btn btn-blue" onclick="refreshAll()">Refresh Both Surfaces</button>
+            </div>
+
+            <div style="padding: 4px 6px 6px; color: #444; line-height: 1.7;">
+                Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan<br>
+                X = Spot &nbsp;·&nbsp; Z = IV &nbsp;·&nbsp; Y = value
+            </div>
+
         </div>
 
         <!-- right panel -->
@@ -288,7 +431,7 @@
     </div>
 
     <div class="footer">
-        Created by <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank">Johannes Dassler</a>
+        <a href="https://www.linkedin.com/in/johannes-dassler-19473b225/" target="_blank">Johannes Dassler</a>
     </div>
 </div>
 
